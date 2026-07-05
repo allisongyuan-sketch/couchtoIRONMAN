@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#2c2c31;font-family:'Hanken Grotesk',system-ui,sans-serif}
+  .dv-turn{padding:44px 48px 40px;scroll-margin-top:16px}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 26px}
+  .dv-tid{font:600 10px 'IBM Plex Mono',monospace;padding:4px 8px;background:#0b1220;color:#fff;border-radius:5px;text-decoration:none}
+  .dv-tname{font:600 14px/1.3 'Hanken Grotesk',sans-serif;color:#f4f2ee}
+  .dv-tsub{font:400 12.5px/1.4 'Hanken Grotesk';color:rgba(255,255,255,.5)}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
+  .dv-oid{font:600 10.5px 'IBM Plex Mono',monospace;padding:3px 7px;background:rgba(255,255,255,.1);color:#f4f2ee;border-radius:5px;text-decoration:none}
+  .dv-olabel{display:flex;align-items:center;gap:9px;font:400 12px/1.35 'Hanken Grotesk';color:rgba(255,255,255,.62);max-width:390px}
+  .dv-opt:target .dv-oid{background:#f5a623;color:#0b1220}
+  .dv-next{margin:30px 0 0;font:13px/1.6 'Hanken Grotesk';color:rgba(255,255,255,.5)}
+  .dv-next a{color:rgba(255,255,255,.8)}
+  @keyframes pulseDot{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+  @keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+  @keyframes drawRing{from{stroke-dashoffset:var(--c)}to{stroke-dashoffset:var(--o)}}
+  .phone{width:414px;border-radius:56px;background:linear-gradient(145deg,#3a3a40,#111114);padding:13px;position:relative}
+  .screen{width:388px;height:838px;border-radius:44px;overflow:hidden;position:relative}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:32px;background:#000;border-radius:0 0 20px 20px;z-index:40}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+  <div class="dv-thd">
+    <a class="dv-tid" href="#t3">3</a>
+    <div>
+      <div class="dv-tname">Onboarding — the plan builder</div>
+      <div class="dv-tsub">Race → Fitness → Availability → your recommended plan · same dark language as <a class="dv-oid" href="#2a">2a</a>, full-bleed steps with a progress bar</div>
+    </div>
+  </div>
+  <div class="dv-opts">
+
+    <!-- ===== 3a — STEP 1 RACE ===== -->
+    <div class="dv-opt" id="3a">
+      <div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a><span><b style="color:#f4f2ee">Step 1 · Race.</b> Pick the distance — the one decision that re-contextualizes everything after it. Each card shows the real swim/bike/run legs.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#0b1220">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span><span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span></span></div>
+          <!-- progress -->
+          <div style="display:flex;gap:5px;padding:16px 22px 0">
+            <div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div>
+            <div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div>
+            <div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div>
+            <div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div>
+          </div>
+          <div style="padding:20px 22px 100px;overflow:hidden">
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#8e99ae">STEP 1 OF 4 · RACE</div>
+            <div style="font:700 25px/1.15 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em;margin-top:8px">What are you<br>training for?</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px">
+              <!-- sprint -->
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px">
+                <div style="width:34px;height:34px;border-radius:50%;background:#182338;border:1.5px solid #4fd1c5;display:flex;align-items:center;justify-content:center;font:700 11px 'IBM Plex Mono';color:#4fd1c5">SPR</div>
+                <div style="font:600 15px 'Hanken Grotesk';color:#edeff3;margin-top:10px">Sprint</div>
+                <div style="font:500 10.5px/1.5 'IBM Plex Mono';color:#8e99ae;margin-top:4px">0.5 · 12.4 · 3.1 mi</div>
+              </div>
+              <!-- olympic -->
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px">
+                <div style="width:34px;height:34px;border-radius:50%;background:#182338;border:1.5px solid #f5a623;display:flex;align-items:center;justify-content:center;font:700 11px 'IBM Plex Mono';color:#f5a623">OLY</div>
+                <div style="font:600 15px 'Hanken Grotesk';color:#edeff3;margin-top:10px">Olympic</div>
+                <div style="font:500 10.5px/1.5 'IBM Plex Mono';color:#8e99ae;margin-top:4px">0.9 · 24.8 · 6.2 mi</div>
+              </div>
+              <!-- 70.3 selected -->
+              <div style="background:#f5a623;border:1px solid #f5a623;border-radius:14px;padding:13px;position:relative">
+                <div style="position:absolute;top:11px;right:11px;width:20px;height:20px;border-radius:50%;background:#0b1220;display:flex;align-items:center;justify-content:center;color:#f5a623;font:700 11px 'Hanken Grotesk'">✓</div>
+                <div style="width:34px;height:34px;border-radius:50%;background:rgba(11,18,32,.14);display:flex;align-items:center;justify-content:center;font:700 11px 'IBM Plex Mono';color:#0b1220">70.3</div>
+                <div style="font:600 15px 'Hanken Grotesk';color:#0b1220;margin-top:10px">IRONMAN 70.3</div>
+                <div style="font:500 10.5px/1.5 'IBM Plex Mono';color:#5a4410;margin-top:4px">1.2 · 56 · 13.1 mi</div>
+              </div>
+              <!-- full -->
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px">
+                <div style="width:34px;height:34px;border-radius:50%;background:#182338;border:1.5px solid #ff6b6b;display:flex;align-items:center;justify-content:center;font:700 10px 'IBM Plex Mono';color:#ff6b6b">140</div>
+                <div style="font:600 15px 'Hanken Grotesk';color:#edeff3;margin-top:10px">Full IRONMAN</div>
+                <div style="font:500 10.5px/1.5 'IBM Plex Mono';color:#8e99ae;margin-top:4px">2.4 · 112 · 26.2 mi</div>
+              </div>
+            </div>
+            <!-- race name + date -->
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <div style="flex:1.4"><div style="font:500 11px 'Hanken Grotesk';color:#8e99ae;margin-bottom:6px">Race name</div><div style="background:#182338;border:1px solid #26324a;border-radius:11px;padding:12px 13px;font:400 13px 'Hanken Grotesk';color:#edeff3">Oceanside 70.3</div></div>
+              <div style="flex:1"><div style="font:500 11px 'Hanken Grotesk';color:#8e99ae;margin-bottom:6px">Race date</div><div style="background:#182338;border:1px solid #26324a;border-radius:11px;padding:12px 13px;font:500 13px 'IBM Plex Mono';color:#edeff3">Mar 22</div></div>
+            </div>
+            <!-- helper -->
+            <div style="display:flex;gap:10px;margin-top:16px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:12px;padding:12px 13px">
+              <span style="color:#f5a623;font-size:14px">◷</span>
+              <span style="font:400 12px/1.5 'Hanken Grotesk';color:#d6c39a"><b style="color:#f5a623">14 weeks away.</b> A 70.3 plan usually runs 16–24 weeks — we'll fit a focused build to the time you have.</span>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 22px 26px;background:linear-gradient(180deg,rgba(11,18,32,0),#0b1220 30%)">
+            <div style="text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 3b — STEP 2 FITNESS ===== -->
+    <div class="dv-opt" id="3b">
+      <div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a><span><b style="color:#f4f2ee">Step 2 · Fitness.</b> Real numbers, not sliders — longest swim/ride/run. A reassuring banner appears if you're under the base benchmark.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#0b1220">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span><span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span></span></div>
+          <div style="display:flex;gap:5px;padding:16px 22px 0"><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div><div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div></div>
+          <div style="padding:20px 22px 100px;overflow:hidden">
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#8e99ae">STEP 2 OF 4 · FITNESS</div>
+            <div style="font:700 25px/1.15 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em;margin-top:8px">Where are you<br>starting from?</div>
+            <span style="display:inline-block;font:500 10px 'IBM Plex Mono';letter-spacing:.05em;color:#f5a623;background:rgba(245,166,35,.12);padding:6px 10px;border-radius:999px;margin-top:12px">TARGET · IRONMAN 70.3 · 1.2 / 56 / 13.1 mi</span>
+            <!-- experience -->
+            <div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin:18px 0 9px">Have you raced a triathlon before?</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:11px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:12px 13px"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #3a4763;flex:none"></span><span style="font:500 13px 'Hanken Grotesk';color:#c8cfdb">Never raced a triathlon</span></div>
+              <div style="display:flex;align-items:center;gap:11px;background:#182338;border:1px solid #f5a623;border-radius:12px;padding:12px 13px"><span style="width:18px;height:18px;border-radius:50%;border:5px solid #f5a623;background:#0b1220;flex:none"></span><span style="font:600 13px 'Hanken Grotesk';color:#edeff3">Raced shorter, but not this far</span></div>
+              <div style="display:flex;align-items:center;gap:11px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:12px 13px"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #3a4763;flex:none"></span><span style="font:500 13px 'Hanken Grotesk';color:#c8cfdb">Raced 70.3 or longer before</span></div>
+            </div>
+            <!-- baselines -->
+            <div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin:18px 0 9px">Your recent bests</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:11px 13px">
+                <span style="width:8px;height:8px;border-radius:50%;background:#4fd1c5;flex:none"></span><span style="flex:1;font:500 12.5px 'Hanken Grotesk';color:#c8cfdb">Longest swim</span>
+                <span style="font:600 13px 'IBM Plex Mono';color:#edeff3;background:#182338;padding:6px 9px;border-radius:8px">1200 m</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:11px 13px">
+                <span style="width:8px;height:8px;border-radius:50%;background:#f5a623;flex:none"></span><span style="flex:1;font:500 12.5px 'Hanken Grotesk';color:#c8cfdb">Longest ride</span>
+                <span style="font:600 13px 'IBM Plex Mono';color:#edeff3;background:#182338;padding:6px 9px;border-radius:8px">32 mi</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:11px 13px">
+                <span style="width:8px;height:8px;border-radius:50%;background:#ff6b6b;flex:none"></span><span style="flex:1;font:500 12.5px 'Hanken Grotesk';color:#c8cfdb">Longest run</span>
+                <span style="font:600 13px 'IBM Plex Mono';color:#edeff3;background:#182338;padding:6px 9px;border-radius:8px">8 mi</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:14px;background:rgba(79,209,197,.07);border:1px solid rgba(79,209,197,.25);border-radius:12px;padding:12px 13px">
+              <span style="color:#4fd1c5;font-size:14px">✓</span>
+              <span style="font:400 12px/1.5 'Hanken Grotesk';color:#a9d8d2">Solid base to build on. We'll add a few extra weeks of easy swim volume early so the 1.2 mi never feels daunting.</span>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 22px 26px;background:linear-gradient(180deg,rgba(11,18,32,0),#0b1220 30%);display:flex;gap:12px">
+            <div style="flex:none;padding:15px 20px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#8e99ae;background:#182338">Back</div>
+            <div style="flex:1;text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 3c — STEP 3 AVAILABILITY ===== -->
+    <div class="dv-opt" id="3c">
+      <div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a><span><b style="color:#f4f2ee">Step 3 · Availability.</b> Which days you can train and how many hours — the plan is shaped to your real week, not an ideal one.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#0b1220">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span><span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span></span></div>
+          <div style="display:flex;gap:5px;padding:16px 22px 0"><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#26324a"></div></div>
+          <div style="padding:20px 22px 100px;overflow:hidden">
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#8e99ae">STEP 3 OF 4 · AVAILABILITY</div>
+            <div style="font:700 25px/1.15 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em;margin-top:8px">When can<br>you train?</div>
+            <div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin:20px 0 11px">Training days</div>
+            <div style="display:flex;justify-content:space-between;gap:6px">
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#f5a623;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#0b1220">M</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#f5a623;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#0b1220">T</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#f5a623;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#0b1220">W</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#f5a623;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#0b1220">T</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#121b2e;border:1px solid #26324a;display:flex;align-items:center;justify-content:center;font:600 13px 'Hanken Grotesk';color:#8e99ae">F</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#f5a623;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#0b1220">S</div>
+              <div style="flex:1;aspect-ratio:1;border-radius:12px;background:#121b2e;border:1px solid #26324a;display:flex;align-items:center;justify-content:center;font:600 13px 'Hanken Grotesk';color:#8e99ae">S</div>
+            </div>
+            <div style="font:500 11.5px 'IBM Plex Mono';color:#8e99ae;margin-top:11px">5 training days · 2 rest days per week</div>
+            <!-- hours slider -->
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 12px"><span style="font:600 13px 'Hanken Grotesk';color:#edeff3">Hours per week</span><span style="font:600 15px 'IBM Plex Mono';color:#f5a623">12 h</span></div>
+            <div style="position:relative;height:8px;background:#182338;border-radius:5px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:47%;background:linear-gradient(90deg,#ff6b6b,#f5a623);border-radius:5px"></div>
+              <div style="position:absolute;left:47%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#edeff3;border:3px solid #f5a623"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font:500 10px 'IBM Plex Mono';color:#54617d"><span>3h</span><span>25h</span></div>
+            <!-- injury -->
+            <div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin:22px 0 9px">Any injuries or limits? <span style="color:#8e99ae;font-weight:400">(optional)</span></div>
+            <div style="background:#182338;border:1px solid #26324a;border-radius:12px;padding:13px;min-height:56px;font:400 13px/1.5 'Hanken Grotesk';color:#8e99ae">Right knee gets cranky on back-to-back run days…</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 22px 26px;background:linear-gradient(180deg,rgba(11,18,32,0),#0b1220 30%);display:flex;gap:12px">
+            <div style="flex:none;padding:15px 20px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#8e99ae;background:#182338">Back</div>
+            <div style="flex:1;text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 3d — STEP 4 RECOMMENDATION ===== -->
+    <div class="dv-opt" id="3d">
+      <div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a><span><b style="color:#f4f2ee">The payoff · your plan.</b> One tailored recommendation with its phase shape and a review of what it's built around — then Generate.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:radial-gradient(115% 50% at 50% 0%,#13203a 0%,#0b1220 46%)">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span><span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span></span></div>
+          <div style="display:flex;gap:5px;padding:16px 22px 0"><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div><div style="flex:1;height:4px;border-radius:3px;background:#f5a623"></div></div>
+          <div style="padding:20px 22px 110px;overflow:hidden">
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#6ee7b7">READY · YOUR PLAN</div>
+            <div style="font:700 25px/1.15 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em;margin-top:8px">Built for your goal<br>and your week.</div>
+            <!-- hero plan card -->
+            <div style="background:#121b2e;border:1px solid #26324a;border-radius:18px;overflow:hidden;margin-top:18px">
+              <div style="padding:18px 18px 16px;border-bottom:1px solid #26324a">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                  <div>
+                    <div style="font:700 20px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Oceanside 70.3</div>
+                    <div style="font:500 12px 'IBM Plex Mono';color:#8e99ae;margin-top:4px">20 WEEKS · 5 DAYS/WK · ~12H</div>
+                  </div>
+                  <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,166,35,.14);border:1.5px solid #f5a623;display:flex;align-items:center;justify-content:center;font:700 14px 'IBM Plex Mono';color:#f5a623;flex:none">70.3</div>
+                </div>
+                <div style="font:400 12.5px/1.55 'Hanken Grotesk';color:#a8b1c2;margin-top:12px">A base-heavy build that grows your swim gently, protects that knee with smart run spacing, and peaks you right into race week.</div>
+              </div>
+              <!-- phase shape -->
+              <div style="padding:15px 18px 17px">
+                <div style="font:500 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae;margin-bottom:9px">PHASE SHAPE</div>
+                <div style="display:flex;gap:3px;height:9px">
+                  <div style="flex:0 0 45%;background:#4fd1c5;border-radius:5px 2px 2px 5px"></div>
+                  <div style="flex:0 0 30%;background:#f5a623"></div>
+                  <div style="flex:0 0 15%;background:#ff6b6b"></div>
+                  <div style="flex:0 0 10%;background:#9f7aea;border-radius:2px 5px 5px 2px"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:9px;font:500 9.5px 'IBM Plex Mono';color:#8e99ae"><span style="color:#4fd1c5">BASE 9w</span><span style="color:#f5a623">BUILD 6w</span><span style="color:#ff6b6b">PEAK 3w</span><span style="color:#9f7aea">TAPER 2w</span></div>
+              </div>
+            </div>
+            <!-- review tiles -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px">
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:13px;padding:12px 13px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.08em;color:#8e99ae">EXPERIENCE</div><div style="font:600 14px 'Hanken Grotesk';color:#edeff3;margin-top:4px">Intermediate</div></div>
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:13px;padding:12px 13px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.08em;color:#8e99ae">FIRST WORKOUT</div><div style="font:600 14px 'Hanken Grotesk';color:#edeff3;margin-top:4px">Tomorrow, 7am</div></div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 22px 26px;background:linear-gradient(180deg,rgba(11,18,32,0),#0b1220 34%)">
+            <div style="text-align:center;padding:16px;border-radius:13px;font:700 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Generate my plan →</div>
+            <div style="text-align:center;font:500 12px 'Hanken Grotesk';color:#8e99ae;margin-top:12px">See all plans instead</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "make the distance cards in <a class="dv-oid" href="#3a">3a</a> full-width rows" · "add a plan-preview carousel like Runna to <a class="dv-oid" href="#3d">3d</a>" · "turn the whole flow into a working prototype" · "design the Calendar or Plan screen"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd">
+    <a class="dv-tid" href="#t2">2</a>
+    <div>
+      <div class="dv-tname">Hybrid — dark <a class="dv-oid" href="#1a">1a</a> + <a class="dv-oid" href="#1c">1c</a>, one scrolling home + a Coach page</div>
+      <div class="dv-tsub">Message → season progress → sessions/hours/streak → today's full workouts → scroll for "Load this week" · Ask a coach lives on its own page</div>
+    </div>
+  </div>
+  <div class="dv-opts">
+
+    <!-- ============ 2a — HYBRID HOME (top of scroll) ============ -->
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a><span><b style="color:#f4f2ee">Home — above the fold.</b> Header message + season progress + sessions/hours/streak, then today's workouts with full detail. The next card peeks to invite scroll.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:radial-gradient(115% 55% at 50% 0%,#13203a 0%,#0b1220 48%)">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span>
+              <span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:12px 20px 90px;overflow:hidden">
+            <!-- header -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:6px">
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623;margin-bottom:5px">WEEK 06 · BUILD PHASE</div>
+                <div style="font:600 26px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Let's build.</div>
+                <div style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;margin-top:3px">14 weeks to Oceanside 70.3 · Mar 22</div>
+              </div>
+              <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#f5a623);display:flex;align-items:center;justify-content:center;font:600 13px 'Hanken Grotesk';color:#0b1220;flex:none">AR</div>
+            </div>
+            <!-- season progress -->
+            <div style="margin-top:16px;background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:14px 15px 12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+                <span style="font:600 12px 'Hanken Grotesk';color:#edeff3">Season progress</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">6 / 20 wks</span>
+              </div>
+              <div style="position:relative;display:flex;gap:3px;height:9px">
+                <div style="flex:0 0 45%;background:#4fd1c5;border-radius:5px 2px 2px 5px;opacity:.9"></div>
+                <div style="flex:0 0 30%;background:#f5a623;border-radius:2px"></div>
+                <div style="flex:0 0 15%;background:#ff6b6b;opacity:.3;border-radius:2px"></div>
+                <div style="flex:0 0 10%;background:#9f7aea;opacity:.3;border-radius:2px 5px 5px 2px"></div>
+                <div style="position:absolute;left:30%;top:-4px;bottom:-4px;width:2px;background:#edeff3;border-radius:2px"></div>
+                <div style="position:absolute;left:30%;top:-8px;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:#edeff3;animation:pulseDot 2.4s ease-in-out infinite"></div>
+              </div>
+              <div style="display:flex;gap:13px;margin-top:11px">
+                <span style="font:500 10px 'IBM Plex Mono';color:#4fd1c5">● BASE</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#f5a623">● BUILD</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● PEAK</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● TAPER</span>
+              </div>
+            </div>
+            <!-- stats -->
+            <div style="display:flex;gap:9px;margin-top:10px">
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">SESSIONS</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">3<span style="font-size:13px;color:#8e99ae">/6</span></div></div>
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">HOURS</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">5.2<span style="font-size:13px;color:#8e99ae">/7.5</span></div></div>
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">STREAK</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">11<span style="font-size:13px;color:#8e99ae">d</span></div></div>
+            </div>
+            <!-- load this week -->
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 11px">
+              <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Load this week</span>
+              <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">7.5h planned</span>
+            </div>
+            <div style="background:#121b2e;border:1px solid #26324a;border-radius:18px;padding:15px 16px 13px">
+              <div style="position:relative;height:132px;margin:0 -2px">
+                <div style="position:absolute;left:0;right:0;bottom:14px;top:14px">
+                  <div style="position:absolute;left:0;right:0;bottom:74px;border-top:1px dashed #26324a"></div>
+                  <div style="position:absolute;left:2px;bottom:70px;font:500 8px 'IBM Plex Mono';color:#54617d">2h</div>
+                  <div style="position:absolute;left:0;right:0;bottom:37px;border-top:1px dashed #26324a"></div>
+                  <div style="position:absolute;left:2px;bottom:33px;font:500 8px 'IBM Plex Mono';color:#54617d">1h</div>
+                </div>
+                <div style="position:absolute;inset:0;display:flex;align-items:stretch;justify-content:space-between;gap:8px">
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">45m</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:28px;background:linear-gradient(180deg,#6fe0d6,#4fd1c5)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">M</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">1:00</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:37px;background:linear-gradient(180deg,#ff8585,#ff6b6b)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">T</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">30m</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:19px;background:linear-gradient(180deg,#b49af0,#9f7aea)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">W</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;position:relative"><div style="position:absolute;top:-5px;left:-4px;right:-4px;bottom:-4px;background:rgba(245,166,35,.09);border:1px solid rgba(245,166,35,.4);border-radius:10px"></div><div style="font:700 8.5px 'IBM Plex Mono';color:#f5a623;position:relative">2:20</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px;position:relative"><div style="height:46px;background:linear-gradient(180deg,#f8bd5c,#f5a623)"></div><div style="height:25px;background:linear-gradient(180deg,#6fe0d6,#4fd1c5)"></div><div style="height:15px;background:linear-gradient(180deg,#b49af0,#9f7aea)"></div></div><span style="font:700 9px 'IBM Plex Mono';color:#f5a623;position:relative">T</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#3f4a63">rest</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#26324a"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">F</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:600 8.5px 'IBM Plex Mono';color:#8b96ac">2:50</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:12px;background:linear-gradient(180deg,#ff8585,#ff6b6b)"></div><div style="height:92px;background:linear-gradient(180deg,#f8bd5c,#f5a623)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">S</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#3f4a63">rest</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#26324a"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">S</span></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid #26324a">
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#4fd1c5;display:block"></i>Swim</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#f5a623;display:block"></i>Bike</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#ff6b6b;display:block"></i>Run</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#9f7aea;display:block"></i>Str</span>
+              </div>
+            </div>
+            <!-- today header -->
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 10px">
+              <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Today · Thu</span>
+              <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">3 sessions · 2h 20m</span>
+            </div>
+            <!-- swim done -->
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#121b2e;border:1px solid #26324a;border-radius:14px;margin-bottom:9px">
+              <div style="width:22px;height:22px;border-radius:7px;background:#4fd1c5;display:flex;align-items:center;justify-content:center;color:#0b1220;font:700 12px 'Hanken Grotesk';flex:none">✓</div>
+              <div style="flex:1;min-width:0"><div style="font:600 14px 'Hanken Grotesk';color:#8e99ae;text-decoration:line-through">Technique · Catch &amp; Roll</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">40 MIN · RPE 4</div></div>
+              <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#4fd1c5;background:rgba(79,209,197,.13);padding:5px 8px;border-radius:999px;flex:none">SWIM</span>
+            </div>
+            <!-- bike detailed -->
+            <div style="background:#121b2e;border:1px solid #f5a623;border-radius:14px;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 14px">
+                <div style="width:22px;height:22px;border-radius:7px;border:2px solid #f5a623;flex:none"></div>
+                <div style="flex:1;min-width:0"><div style="font:600 14px 'Hanken Grotesk';color:#edeff3">Threshold Intervals</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">75 MIN · RPE 7 · MAIN SESSION</div></div>
+                <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#f5a623;background:rgba(245,166,35,.13);padding:5px 8px;border-radius:999px;flex:none">BIKE</span>
+              </div>
+              <div style="padding:0 14px 13px">
+                <div style="font:italic 400 12px/1.5 'Hanken Grotesk';color:#8e99ae;margin-bottom:11px">Lifts your sustainable power. Each rep steady — the last minute hard but repeatable.</div>
+                <div style="display:flex;gap:7px">
+                  <div style="flex:none;padding:8px 9px;background:#182338;border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">WARM</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">12'</div></div>
+                  <div style="flex:1;padding:8px 9px;background:linear-gradient(90deg,rgba(245,166,35,.16),rgba(245,166,35,.05));border:1px solid rgba(245,166,35,.35);border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#f5a623">4 × 6 MIN @ THRESHOLD</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">RPE 7 · 3' EASY</div></div>
+                  <div style="flex:none;padding:8px 9px;background:#182338;border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">COOL</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">9'</div></div>
+                </div>
+                <div style="display:flex;gap:9px;margin-top:12px;align-items:center">
+                  <div style="flex:1;text-align:center;padding:12px;border-radius:11px;font:600 14px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Start ride ▶</div>
+                  <div style="flex:none;display:flex;align-items:center;gap:7px;padding:12px 13px;border-radius:11px;background:#182338;border:1px solid #26324a"><span style="color:#6ee7b7;font-size:15px">⌕</span><span style="font:600 12px 'Hanken Grotesk';color:#c8cfdb">Ask</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- strength peek -->
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#121b2e;border:1px solid #26324a;border-radius:14px;margin-top:9px;opacity:.85">
+              <div style="width:22px;height:22px;border-radius:7px;border:2px solid #9f7aea;flex:none"></div>
+              <div style="flex:1;min-width:0"><div style="font:600 14px 'Hanken Grotesk';color:#edeff3">Core &amp; Glutes</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">25 MIN · RPE 5 · OPTIONAL</div></div>
+              <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#9f7aea;background:rgba(159,122,234,.13);padding:5px 8px;border-radius:999px;flex:none">STR</span>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(11,18,32,.92);backdrop-filter:blur(12px);border-top:1px solid #26324a;display:flex;justify-content:space-around;align-items:flex-start;padding-top:11px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#f5a623"><span style="font-size:16px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">⌕</span>Coach</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 2c — COACH PAGE ============ -->
+    <div class="dv-opt" id="2c">
+      <div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a><span><b style="color:#f4f2ee">Coach — its own page.</b> A dedicated tab where beginners ask about form, pacing, or "why am I doing this?" — context-aware to today's session, with tap-to-ask suggestions.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:radial-gradient(120% 50% at 50% 0%,#12203a 0%,#0b1220 46%)">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span>
+              <span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:14px 20px 12px">
+            <div style="display:flex;align-items:center;gap:11px">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6ee7b7,#4fd1c5);display:flex;align-items:center;justify-content:center;font:700 16px 'Hanken Grotesk';color:#0b1220;flex:none">C</div>
+              <div><div style="font:600 20px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Coach</div><div style="font:400 12px 'Hanken Grotesk';color:#8e99ae">Ask anything — form, pacing, fueling, why</div></div>
+            </div>
+            <!-- context chip -->
+            <div style="display:flex;align-items:center;gap:9px;margin-top:14px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:9px 12px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#f5a623;flex:none"></span>
+              <span style="font:500 11px 'Hanken Grotesk';color:#c8cfdb;flex:1">On <b style="color:#edeff3">Threshold Intervals</b> · today's ride</span>
+              <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">clear ✕</span>
+            </div>
+          </div>
+          <!-- chat -->
+          <div style="padding:4px 20px 12px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+            <div style="align-self:flex-start;max-width:82%;background:#121b2e;border:1px solid #26324a;border-radius:16px 16px 16px 5px;padding:12px 14px"><div style="font:400 13px/1.55 'Hanken Grotesk';color:#e2e6ee">Hey Alex — this is the key session of your week. Ask me anything about it, or tap a question below to start.</div></div>
+            <!-- suggested -->
+            <div style="display:flex;flex-wrap:wrap;gap:7px;align-self:flex-start;max-width:92%">
+              <span style="font:500 12px 'Hanken Grotesk';color:#6ee7b7;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.28);border-radius:999px;padding:7px 12px">What cadence for the reps?</span>
+              <span style="font:500 12px 'Hanken Grotesk';color:#6ee7b7;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.28);border-radius:999px;padding:7px 12px">Is RPE 7 too hard?</span>
+              <span style="font:500 12px 'Hanken Grotesk';color:#6ee7b7;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.28);border-radius:999px;padding:7px 12px">Can I do it on a trainer?</span>
+              <span style="font:500 12px 'Hanken Grotesk';color:#6ee7b7;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.28);border-radius:999px;padding:7px 12px">How do I fuel it?</span>
+            </div>
+            <!-- user -->
+            <div style="align-self:flex-end;max-width:80%;background:linear-gradient(135deg,#ff6b6b,#f5a623);border-radius:16px 16px 5px 16px;padding:11px 14px"><div style="font:500 13px/1.5 'Hanken Grotesk';color:#0b1220">What cadence should I hold for the 6-minute reps?</div></div>
+            <!-- coach answer -->
+            <div style="align-self:flex-start;max-width:86%;background:#121b2e;border:1px solid #26324a;border-radius:16px 16px 16px 5px;padding:12px 14px">
+              <div style="font:400 13px/1.6 'Hanken Grotesk';color:#e2e6ee">Aim for <b style="color:#f5a623">85–95 rpm</b> — smooth and strong, not grinding. Threshold is about steady pressure you could just barely hold for an hour, so let effort (RPE 7) lead and let the legs settle into that cadence.</div>
+              <div style="margin-top:10px;padding-top:10px;border-top:1px solid #26324a;display:flex;align-items:center;gap:8px"><span style="font:500 10px 'IBM Plex Mono';letter-spacing:.06em;color:#6ee7b7">⌕ RELATED</span><span style="font:500 11px 'Hanken Grotesk';color:#8e99ae">What does threshold feel like? ›</span></div>
+            </div>
+          </div>
+          <!-- input bar -->
+          <div style="position:absolute;bottom:88px;left:16px;right:16px;display:flex;align-items:center;gap:9px;background:#182338;border:1px solid #2f3d59;border-radius:16px;padding:10px 10px 10px 15px">
+            <span style="font:400 13px 'Hanken Grotesk';color:#8e99ae;flex:1">Ask your coach…</span>
+            <span style="width:36px;height:36px;border-radius:11px;background:#6ee7b7;display:flex;align-items:center;justify-content:center;font-size:17px;color:#0b1220;flex:none">↑</span>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(11,18,32,.94);backdrop-filter:blur(12px);border-top:1px solid #26324a;display:flex;justify-content:space-around;align-items:flex-start;padding-top:11px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:16px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:600 9px 'Hanken Grotesk';color:#6ee7b7"><span style="font-size:16px">⌕</span>Coach</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "make the Coach answers expandable with form videos" · "turn <a class="dv-oid" href="#2a">2a</a> into a working scrollable prototype" · "now design onboarding / the plan-builder"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd">
+    <a class="dv-tid" href="#t1">1</a>
+    <div>
+      <div class="dv-tname">Home / dashboard — four directions</div>
+      <div class="dv-tsub">IRONMAN 70.3 athlete, Week 6 of 20 · same data, four visual + data-viz languages · iPhone</div>
+    </div>
+  </div>
+  <div class="dv-opts">
+
+    <!-- ============ 1a — DARK · INSTRUMENT ============ -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span><b style="color:#f4f2ee">Instrument</b> · dark, by-the-book. GPS-watch calm: linear phase bar, mono readouts, today's bike session expanded to full detail with an Ask bar.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#0b1220">
+          <!-- status bar -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center;font-size:12px;letter-spacing:1px">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px">
+                <i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i>
+              </span>
+              <span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:14px 22px 96px;overflow:hidden">
+            <!-- header -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:8px">
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623;margin-bottom:5px">WEEK 06 · BUILD PHASE</div>
+                <div style="font:600 27px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Let's build.</div>
+                <div style="font:400 13px 'Hanken Grotesk';color:#8e99ae;margin-top:3px">14 weeks to Oceanside 70.3 · Mar 22</div>
+              </div>
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#f5a623);display:flex;align-items:center;justify-content:center;font:600 14px 'Hanken Grotesk';color:#0b1220;flex:none">AR</div>
+            </div>
+
+            <!-- phase bar -->
+            <div style="margin-top:20px;background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:15px 16px 13px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px">
+                <span style="font:600 12px 'Hanken Grotesk';color:#edeff3">Season progress</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">6 / 20 wks</span>
+              </div>
+              <div style="position:relative;display:flex;gap:3px;height:9px">
+                <div style="flex:0 0 45%;background:#4fd1c5;border-radius:5px 2px 2px 5px;opacity:.9"></div>
+                <div style="flex:0 0 30%;background:#f5a623;border-radius:2px"></div>
+                <div style="flex:0 0 15%;background:#ff6b6b;opacity:.3;border-radius:2px"></div>
+                <div style="flex:0 0 10%;background:#9f7aea;opacity:.3;border-radius:2px 5px 5px 2px"></div>
+                <div style="position:absolute;left:30%;top:-4px;bottom:-4px;width:2px;background:#edeff3;border-radius:2px"></div>
+                <div style="position:absolute;left:30%;top:-8px;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:#edeff3;animation:pulseDot 2.4s ease-in-out infinite"></div>
+              </div>
+              <div style="display:flex;gap:14px;margin-top:12px">
+                <span style="font:500 10px 'IBM Plex Mono';color:#4fd1c5">● BASE</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#f5a623">● BUILD</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● PEAK</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● TAPER</span>
+              </div>
+            </div>
+
+            <!-- stat tiles -->
+            <div style="display:flex;gap:9px;margin-top:11px">
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px 12px">
+                <div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">SESSIONS</div>
+                <div style="font:600 22px 'IBM Plex Mono';color:#edeff3;margin-top:4px">3<span style="font-size:14px;color:#8e99ae">/6</span></div>
+              </div>
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px 12px">
+                <div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">HOURS</div>
+                <div style="font:600 22px 'IBM Plex Mono';color:#edeff3;margin-top:4px">5.2<span style="font-size:14px;color:#8e99ae">/7.5</span></div>
+              </div>
+              <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:13px 12px">
+                <div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">STREAK</div>
+                <div style="font:600 22px 'IBM Plex Mono';color:#edeff3;margin-top:4px">11<span style="font-size:14px;color:#8e99ae">d</span></div>
+              </div>
+            </div>
+
+            <!-- today -->
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 11px">
+              <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Today · Thu</span>
+              <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">2 sessions · 1h 55m</span>
+            </div>
+
+            <!-- swim done -->
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 14px;background:#121b2e;border:1px solid #26324a;border-radius:14px;margin-bottom:9px">
+              <div style="width:22px;height:22px;border-radius:7px;background:#4fd1c5;display:flex;align-items:center;justify-content:center;color:#0b1220;font:700 12px 'Hanken Grotesk';flex:none">✓</div>
+              <div style="flex:1;min-width:0">
+                <div style="font:600 14px 'Hanken Grotesk';color:#8e99ae;text-decoration:line-through">Technique · Catch &amp; Roll</div>
+                <div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">40 MIN · RPE 4</div>
+              </div>
+              <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#4fd1c5;background:rgba(79,209,197,.13);padding:5px 8px;border-radius:999px;flex:none">SWIM</span>
+            </div>
+
+            <!-- bike expanded -->
+            <div style="background:#121b2e;border:1px solid #f5a623;border-radius:14px;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;padding:13px 14px">
+                <div style="width:22px;height:22px;border-radius:7px;border:2px solid #f5a623;background:transparent;flex:none"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:600 14px 'Hanken Grotesk';color:#edeff3">Threshold Intervals</div>
+                  <div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">75 MIN · RPE 7 · MAIN SESSION</div>
+                </div>
+                <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#f5a623;background:rgba(245,166,35,.13);padding:5px 8px;border-radius:999px;flex:none">BIKE</span>
+              </div>
+              <div style="padding:2px 14px 14px">
+                <div style="font:italic 400 12.5px/1.5 'Hanken Grotesk';color:#8e99ae;margin-bottom:12px">Lifts your sustainable power. Hold each rep steady — the last minute should feel hard but repeatable.</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;gap:10px;align-items:flex-start">
+                    <span style="font:500 9px 'IBM Plex Mono';letter-spacing:.05em;color:#f5a623;background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px">WARM-UP</span>
+                    <span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">12 min easy spin, building to Zone 2 · 3 × 30s cadence spin-ups</span>
+                  </div>
+                  <div style="display:flex;gap:10px;align-items:flex-start">
+                    <span style="font:500 9px 'IBM Plex Mono';letter-spacing:.05em;color:#f5a623;background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px">MAIN</span>
+                    <span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">4 × 6 min @ threshold (RPE 7), 3 min easy recovery between</span>
+                  </div>
+                  <div style="display:flex;gap:10px;align-items:flex-start">
+                    <span style="font:500 9px 'IBM Plex Mono';letter-spacing:.05em;color:#f5a623;background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px">COOL</span>
+                    <span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">9 min very easy Zone 1 spin</span>
+                  </div>
+                </div>
+                <!-- ask bar -->
+                <div style="display:flex;align-items:center;gap:9px;margin-top:14px;background:#182338;border:1px dashed #3a4763;border-radius:11px;padding:11px 13px">
+                  <span style="font-size:15px;color:#6ee7b7">⌕</span>
+                  <span style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;flex:1">Ask a coach — "what cadence for the reps?"</span>
+                  <span style="font:600 10px 'IBM Plex Mono';color:#0b1220;background:#6ee7b7;padding:5px 9px;border-radius:7px">ASK</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- bottom nav -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(11,18,32,.92);backdrop-filter:blur(12px);border-top:1px solid #26324a;display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#f5a623"><span style="font-size:17px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">◆</span>Strength</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 1b — LIGHT · DAYLIGHT ============ -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span><b style="color:#f4f2ee">Daylight</b> · warm-paper light. Runna-style single hero "Today" card + Start CTA, week told as 7 discipline dots, Ask-a-coach chip up top.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#f2efe9">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#17140f;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px">
+                <i style="width:3px;height:5px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:7px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:9px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:11px;background:#17140f;border-radius:1px;display:block"></i>
+              </span>
+              <span style="width:22px;height:11px;border:1.5px solid #17140f;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#17140f;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:16px 20px 96px;overflow:hidden">
+            <!-- greeting -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div style="font:400 13px 'Hanken Grotesk';color:#857e73">Thursday, Mar 8 · Build wk 6</div>
+                <div style="font:600 25px 'Hanken Grotesk';color:#17140f;letter-spacing:-.01em;margin-top:3px">Morning, Alex.</div>
+              </div>
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#e04a37,#cf7a00);display:flex;align-items:center;justify-content:center;font:600 14px 'Hanken Grotesk';color:#fff;flex:none">AR</div>
+            </div>
+
+            <!-- week dots -->
+            <div style="background:#fff;border:1px solid #e7e2d8;border-radius:18px;padding:16px 15px 15px;margin-top:16px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+                <span style="font:600 13px 'Hanken Grotesk';color:#17140f">This week</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#857e73">3 of 6 · 5.2 / 7.5h</span>
+              </div>
+              <div style="display:flex;justify-content:space-between">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#12a594;display:flex;align-items:center;justify-content:center;color:#fff;font:700 11px 'Hanken Grotesk'">✓</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">M</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#e04a37;display:flex;align-items:center;justify-content:center;color:#fff;font:700 11px 'Hanken Grotesk'">✓</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">T</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#6d4fd0;display:flex;align-items:center;justify-content:center;color:#fff;font:700 11px 'Hanken Grotesk'">✓</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">W</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#fff;border:2.5px solid #cf7a00;box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:#cf7a00;font:700 11px 'IBM Plex Mono'">2</div><span style="font:700 10px 'IBM Plex Mono';color:#cf7a00">T</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#efeae1;display:flex;align-items:center;justify-content:center;color:#b3aa9c;font:500 10px 'IBM Plex Mono'">·</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">F</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#f4ede0;border:1px solid #e9c893;display:flex;align-items:center;justify-content:center;color:#cf7a00;font:600 9px 'IBM Plex Mono'">3h</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">S</span></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:#efeae1;display:flex;align-items:center;justify-content:center;color:#b3aa9c;font:500 10px 'IBM Plex Mono'">·</div><span style="font:500 10px 'IBM Plex Mono';color:#857e73">S</span></div>
+              </div>
+            </div>
+
+            <!-- hero today -->
+            <div style="background:#fff;border:1px solid #e7e2d8;border-radius:20px;overflow:hidden;margin-top:12px">
+              <div style="height:5px;background:linear-gradient(90deg,#cf7a00,#e08a00)"></div>
+              <div style="padding:18px 17px 17px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <span style="font:600 10px 'IBM Plex Mono';letter-spacing:.09em;color:#cf7a00;background:#f8ecd6;padding:5px 9px;border-radius:999px">UP NEXT · BIKE</span>
+                  <span style="font:500 11px 'IBM Plex Mono';color:#857e73">75 min · RPE 7</span>
+                </div>
+                <div style="font:600 22px 'Hanken Grotesk';color:#17140f;letter-spacing:-.01em">Threshold Intervals</div>
+                <div style="font:400 13px/1.5 'Hanken Grotesk';color:#6f695f;margin-top:6px">4 × 6 min at threshold with 3 min recovery. Lifts the power you can hold on race day.</div>
+                <div style="display:flex;gap:10px;margin-top:16px">
+                  <div style="flex:1;text-align:center;padding:13px;border-radius:12px;font:600 14px 'Hanken Grotesk';color:#fff;background:linear-gradient(135deg,#e04a37,#cf7a00);background-size:200% 100%;animation:shimmer 6s linear infinite alternate">Start session</div>
+                  <div style="flex:none;padding:13px 18px;border-radius:12px;font:600 14px 'Hanken Grotesk';color:#17140f;background:#f2efe9;border:1px solid #e7e2d8">Details</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- later today -->
+            <div style="font:600 13px 'Hanken Grotesk';color:#17140f;margin:18px 2px 10px">Also today</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border:1px solid #e7e2d8;border-radius:14px">
+              <div style="width:9px;height:9px;border-radius:50%;background:#12a594;flex:none"></div>
+              <div style="flex:1"><div style="font:600 13px 'Hanken Grotesk';color:#17140f;text-decoration:line-through;opacity:.55">Swim · Technique</div></div>
+              <span style="font:500 11px 'IBM Plex Mono';color:#857e73">40 min · done</span>
+            </div>
+
+            <!-- ask chip (anchored at page bottom) -->
+            <div style="display:flex;align-items:center;gap:10px;margin-top:14px;background:#fff;border:1px solid #e7e2d8;border-radius:14px;padding:13px 15px">
+              <span style="width:30px;height:30px;border-radius:50%;background:#e6f6f2;display:flex;align-items:center;justify-content:center;font-size:15px;color:#12a594;flex:none">⌕</span>
+              <div style="flex:1"><div style="font:600 13px 'Hanken Grotesk';color:#17140f">Ask a coach</div><div style="font:400 11.5px 'Hanken Grotesk';color:#857e73">Form, pacing, or "why am I doing this?"</div></div>
+              <span style="color:#b3aa9c;font-size:18px">›</span>
+            </div>
+          </div>
+
+          <div style="position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid #e7e2d8;display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:600 9px 'Hanken Grotesk';color:#cf7a00"><span style="font-size:17px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">◆</span>Strength</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 1c — DARK · RINGS ============ -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span><b style="color:#f4f2ee">Rings</b> · bold dark. The week as four concentric discipline rings (swim/bike/run/strength load), big data core, and one focused "next up" card with a full-width Ask bar.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:radial-gradient(120% 80% at 50% 0%,#12203a 0%,#0b1220 55%)">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#edeff3;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px">
+                <i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i>
+              </span>
+              <span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:16px 22px 96px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#8e99ae">OCEANSIDE 70.3 · 14 WKS OUT</div>
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#f5a623);display:flex;align-items:center;justify-content:center;font:600 13px 'Hanken Grotesk';color:#0b1220">AR</div>
+            </div>
+
+            <!-- rings -->
+            <div style="display:flex;justify-content:center;margin-top:14px;position:relative">
+              <svg width="256" height="256" viewBox="0 0 256 256" style="transform:rotate(-90deg)">
+                <g fill="none" stroke-width="11" stroke-linecap="round">
+                  <circle cx="128" cy="128" r="106" stroke="#182338"></circle>
+                  <circle cx="128" cy="128" r="87" stroke="#182338"></circle>
+                  <circle cx="128" cy="128" r="68" stroke="#182338"></circle>
+                  <circle cx="128" cy="128" r="49" stroke="#182338"></circle>
+                  <circle cx="128" cy="128" r="106" stroke="#4fd1c5" stroke-dasharray="666" style="--c:666;--o:120;stroke-dashoffset:120;animation:drawRing 1.2s ease-out"></circle>
+                  <circle cx="128" cy="128" r="87" stroke="#f5a623" stroke-dasharray="547" style="--c:547;--o:230;stroke-dashoffset:230;animation:drawRing 1.2s .12s ease-out backwards"></circle>
+                  <circle cx="128" cy="128" r="68" stroke="#ff6b6b" stroke-dasharray="427" style="--c:427;--o:265;stroke-dashoffset:265;animation:drawRing 1.2s .24s ease-out backwards"></circle>
+                  <circle cx="128" cy="128" r="49" stroke="#9f7aea" stroke-dasharray="308" style="--c:308;--o:170;stroke-dashoffset:170;animation:drawRing 1.2s .36s ease-out backwards"></circle>
+                </g>
+              </svg>
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                <div style="font:500 10px 'IBM Plex Mono';letter-spacing:.14em;color:#8e99ae">WEEK 6</div>
+                <div style="font:600 40px 'Hanken Grotesk';color:#edeff3;line-height:1;letter-spacing:-.02em;margin-top:2px">5.2<span style="font-size:18px;color:#8e99ae">h</span></div>
+                <div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:3px">of 7.5h · 3/6</div>
+              </div>
+            </div>
+            <!-- ring legend -->
+            <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
+              <span style="font:500 10px 'IBM Plex Mono';color:#4fd1c5;background:rgba(79,209,197,.12);padding:5px 9px;border-radius:999px">SWIM 80%</span>
+              <span style="font:500 10px 'IBM Plex Mono';color:#f5a623;background:rgba(245,166,35,.12);padding:5px 9px;border-radius:999px">BIKE 58%</span>
+              <span style="font:500 10px 'IBM Plex Mono';color:#ff6b6b;background:rgba(255,107,107,.12);padding:5px 9px;border-radius:999px">RUN 38%</span>
+              <span style="font:500 10px 'IBM Plex Mono';color:#9f7aea;background:rgba(159,122,234,.12);padding:5px 9px;border-radius:999px">STR 45%</span>
+            </div>
+
+            <!-- next up -->
+            <div style="background:#121b2e;border:1px solid #26324a;border-radius:18px;padding:16px;margin-top:18px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+                <span style="font:600 11px 'IBM Plex Mono';letter-spacing:.1em;color:#f5a623">NEXT UP · TODAY</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">75 MIN · RPE 7</span>
+              </div>
+              <div style="font:600 21px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Threshold Intervals</div>
+              <div style="display:flex;gap:7px;margin-top:13px">
+                <div style="flex:none;padding:8px 10px;background:#182338;border-radius:9px;text-align:center">
+                  <div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">WARM</div><div style="font:600 13px 'IBM Plex Mono';color:#edeff3;margin-top:2px">12'</div>
+                </div>
+                <div style="flex:1;padding:8px 10px;background:linear-gradient(90deg,rgba(245,166,35,.16),rgba(245,166,35,.05));border:1px solid rgba(245,166,35,.35);border-radius:9px;text-align:center">
+                  <div style="font:500 9px 'IBM Plex Mono';color:#f5a623">MAIN SET</div><div style="font:600 13px 'IBM Plex Mono';color:#edeff3;margin-top:2px">4 × 6'</div>
+                </div>
+                <div style="flex:none;padding:8px 10px;background:#182338;border-radius:9px;text-align:center">
+                  <div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">COOL</div><div style="font:600 13px 'IBM Plex Mono';color:#edeff3;margin-top:2px">9'</div>
+                </div>
+              </div>
+              <div style="text-align:center;padding:13px;border-radius:12px;font:600 14px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623);margin-top:13px">Start ride ▶</div>
+              <div style="display:flex;align-items:center;gap:9px;margin-top:11px;background:#182338;border:1px dashed #3a4763;border-radius:11px;padding:11px 13px">
+                <span style="font-size:15px;color:#6ee7b7">⌕</span>
+                <span style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;flex:1">Ask about this session…</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(11,18,32,.9);backdrop-filter:blur(12px);border-top:1px solid #26324a;display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#f5a623"><span style="font-size:17px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#8e99ae"><span style="font-size:17px">◆</span>Strength</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 1d — LIGHT · RHYTHM ============ -->
+    <div class="dv-opt" id="1d">
+      <div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a><span><b style="color:#f4f2ee">Rhythm</b> · editorial light. The week as a stacked training-load strip (Mon–Sun × discipline), a milestone phase track, and today's session with sets + Ask. Boldest type.</span></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" style="background:#eceae3">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px 0;color:#17140f;font:600 15px 'Hanken Grotesk'">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px">
+                <i style="width:3px;height:5px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:7px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:9px;background:#17140f;border-radius:1px;display:block"></i>
+                <i style="width:3px;height:11px;background:#17140f;border-radius:1px;display:block"></i>
+              </span>
+              <span style="width:22px;height:11px;border:1.5px solid #17140f;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#17140f;border-radius:1px;display:block"></i></span>
+            </span>
+          </div>
+          <div style="padding:18px 20px 96px;overflow:hidden">
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.16em;color:#857e73">BUILD PHASE · WEEK 06</div>
+            <div style="font:700 33px/1.02 'Hanken Grotesk';color:#17140f;letter-spacing:-.02em;margin-top:8px">Your training<br>rhythm</div>
+
+            <!-- phase milestone track -->
+            <div style="margin-top:20px;position:relative;padding:0 4px">
+              <div style="height:3px;background:#dcd7cc;border-radius:3px;position:relative">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:30%;background:#17140f;border-radius:3px"></div>
+                <div style="position:absolute;left:30%;top:50%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:#cf7a00;border:3px solid #eceae3;box-shadow:0 0 0 1px #cf7a00"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:9px;font:500 9.5px 'IBM Plex Mono';color:#857e73">
+                <span style="color:#17140f">BASE</span><span style="color:#cf7a00;font-weight:600">BUILD ◂ you</span><span>PEAK</span><span>TAPER</span><span>RACE</span>
+              </div>
+            </div>
+
+            <!-- rhythm strip -->
+            <div style="background:#fff;border:1px solid #e7e2d8;border-radius:20px;padding:17px 16px 15px;margin-top:16px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span style="font:600 13px 'Hanken Grotesk';color:#17140f">Load this week</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#857e73">7.5h planned</span>
+              </div>
+              <!-- plot area -->
+              <div style="position:relative;height:150px;margin:0 -2px">
+                <!-- gridlines -->
+                <div style="position:absolute;left:0;right:0;bottom:14px;top:14px">
+                  <div style="position:absolute;left:0;right:0;bottom:86px;border-top:1px dashed #eee7db"></div>
+                  <div style="position:absolute;left:2px;bottom:82px;font:500 8px 'IBM Plex Mono';color:#c4bcac">2h</div>
+                  <div style="position:absolute;left:0;right:0;bottom:43px;border-top:1px dashed #eee7db"></div>
+                  <div style="position:absolute;left:2px;bottom:39px;font:500 8px 'IBM Plex Mono';color:#c4bcac">1h</div>
+                </div>
+                <!-- columns -->
+                <div style="position:absolute;inset:0;display:flex;align-items:stretch;justify-content:space-between;gap:8px">
+                  <!-- Mon: swim 45 -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:500 8.5px 'IBM Plex Mono';color:#b7ac9b">45m</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:32px;background:linear-gradient(180deg,#5fd0c6,#3fb0a6)"></div></div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">M</span>
+                  </div>
+                  <!-- Tue: run 60 -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:500 8.5px 'IBM Plex Mono';color:#b7ac9b">1:00</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:43px;background:linear-gradient(180deg,#ec6656,#d9503f)"></div></div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">T</span>
+                  </div>
+                  <!-- Wed: strength 30 -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:500 8.5px 'IBM Plex Mono';color:#b7ac9b">30m</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:22px;background:linear-gradient(180deg,#8168d8,#6a51c4)"></div></div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">W</span>
+                  </div>
+                  <!-- Thu today: swim 40 + bike 75 -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;position:relative">
+                    <div style="position:absolute;top:-6px;left:-4px;right:-4px;bottom:-4px;background:linear-gradient(180deg,#fdf6e9,#fbf1de);border:1px solid #f0dcaf;border-radius:10px"></div>
+                    <div style="font:700 8.5px 'IBM Plex Mono';color:#cf7a00;position:relative">1:55</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px;position:relative">
+                      <div style="height:54px;background:linear-gradient(180deg,#f0a63f,#d98a1f)"></div>
+                      <div style="height:29px;background:linear-gradient(180deg,#5fd0c6,#3fb0a6)"></div>
+                    </div>
+                    <span style="font:700 9px 'IBM Plex Mono';color:#cf7a00;position:relative">T</span>
+                  </div>
+                  <!-- Fri: rest -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:500 8.5px 'IBM Plex Mono';color:#d8d0c1">rest</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#e7e2d8"></div></div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">F</span>
+                  </div>
+                  <!-- Sat: brick — bike 150 + run 20 -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:600 8.5px 'IBM Plex Mono';color:#9a8f7c">2:50</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px">
+                      <div style="height:14px;background:linear-gradient(180deg,#ec6656,#d9503f)"></div>
+                      <div style="height:108px;background:linear-gradient(180deg,#f0a63f,#d98a1f)"></div>
+                    </div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">S</span>
+                  </div>
+                  <!-- Sun: rest -->
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                    <div style="font:500 8.5px 'IBM Plex Mono';color:#d8d0c1">rest</div>
+                    <div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#e7e2d8"></div></div>
+                    <span style="font:500 9px 'IBM Plex Mono';color:#a39c8f">S</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;margin-top:14px;padding-top:13px;border-top:1px solid #f0ece4">
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#6f695f"><i style="width:8px;height:8px;border-radius:2px;background:linear-gradient(180deg,#5fd0c6,#3fb0a6);display:block"></i>Swim</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#6f695f"><i style="width:8px;height:8px;border-radius:2px;background:linear-gradient(180deg,#f0a63f,#d98a1f);display:block"></i>Bike</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#6f695f"><i style="width:8px;height:8px;border-radius:2px;background:linear-gradient(180deg,#ec6656,#d9503f);display:block"></i>Run</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#6f695f"><i style="width:8px;height:8px;border-radius:2px;background:linear-gradient(180deg,#8168d8,#6a51c4);display:block"></i>Strength</span>
+              </div>
+            </div>
+
+            <!-- today card -->
+            <div style="background:#17140f;border-radius:20px;padding:17px;margin-top:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <span style="font:600 10px 'IBM Plex Mono';letter-spacing:.09em;color:#f0b657">TODAY · BIKE</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#a39c8f">75 min · RPE 7</span>
+              </div>
+              <div style="font:600 21px 'Hanken Grotesk';color:#fff;letter-spacing:-.01em">Threshold Intervals</div>
+              <div style="font:400 12.5px/1.5 'Hanken Grotesk';color:#b8b1a4;margin-top:6px">4 × 6 min at threshold, 3 min easy between. The big one this week.</div>
+              <div style="display:flex;align-items:center;gap:9px;margin-top:14px;background:#241f18;border-radius:11px;padding:11px 13px">
+                <span style="font-size:15px;color:#6ee7b7">⌕</span>
+                <span style="font:400 12.5px 'Hanken Grotesk';color:#a39c8f;flex:1">Ask about pacing or form…</span>
+                <span style="font:600 10px 'IBM Plex Mono';color:#17140f;background:#6ee7b7;padding:5px 9px;border-radius:7px">ASK</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(236,234,227,.95);backdrop-filter:blur(12px);border-top:1px solid #e7e2d8;display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:600 9px 'Hanken Grotesk';color:#17140f"><span style="font-size:17px">◈</span>Home</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">▦</span>Calendar</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">▤</span>Plan</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">✎</span>Log</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:#a39c8f"><span style="font-size:17px">◆</span>Strength</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "build out <a class="dv-oid" href="#1c">1c</a> as a full screen with the workout-detail + Ask flow" · "make a light version of <a class="dv-oid" href="#1a">1a</a>" · "take <a class="dv-oid" href="#1d">1d</a>'s rhythm strip into <a class="dv-oid" href="#1b">1b</a>" · "now design the onboarding / plan-builder flow"</p>
+</section>
+</x-dc>
+</body>
+</html>

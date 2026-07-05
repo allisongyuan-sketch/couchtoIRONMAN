@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#17171b;font-family:'Hanken Grotesk',system-ui,sans-serif}
+  *{-webkit-tap-highlight-color:transparent}
+  .scr::-webkit-scrollbar{width:0;display:none}
+  @keyframes pulseDot{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 0;background:radial-gradient(130% 90% at 50% -10%,#23232b 0%,#141418 60%)">
+  <div style="width:414px;border-radius:56px;background:linear-gradient(145deg,#3a3a40,#111114);padding:13px;position:relative;box-shadow:0 40px 120px -30px rgba(0,0,0,.8)">
+    <div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:32px;background:#000;border-radius:0 0 20px 20px;z-index:40"></div>
+    <div style="width:388px;height:838px;border-radius:44px;overflow:hidden;position:relative;background:radial-gradient(115% 55% at 50% 0%,#13203a 0%,#0b1220 48%)">
+
+      <!-- status bar -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:15px 30px 10px;color:#edeff3;font:600 15px 'Hanken Grotesk';background:linear-gradient(180deg,#0d1626 60%,rgba(13,22,38,0))">
+        <span>9:41</span>
+        <span style="display:flex;gap:6px;align-items:center">
+          <span style="display:inline-flex;gap:2px;align-items:flex-end;height:11px"><i style="width:3px;height:5px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:7px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:9px;background:#edeff3;border-radius:1px;display:block"></i><i style="width:3px;height:11px;background:#edeff3;border-radius:1px;display:block"></i></span>
+          <span style="width:22px;height:11px;border:1.5px solid #edeff3;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;width:70%;background:#edeff3;border-radius:1px;display:block"></i></span>
+        </span>
+      </div>
+
+      <!-- ============ HOME TAB ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div class="scr" style="position:absolute;inset:0;overflow-y:auto;padding:52px 20px 96px">
+        <!-- header -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:6px">
+          <div>
+            <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623;margin-bottom:5px">WEEK 06 · BUILD PHASE</div>
+            <div style="font:600 26px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Let's build.</div>
+            <div style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;margin-top:3px">14 weeks to Oceanside 70.3 · Mar 22</div>
+          </div>
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#f5a623);display:flex;align-items:center;justify-content:center;font:600 13px 'Hanken Grotesk';color:#0b1220;flex:none">AR</div>
+        </div>
+
+        <!-- season progress -->
+        <sc-if value="{{ showSeasonProgress }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:16px;background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:14px 15px 12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <span style="font:600 12px 'Hanken Grotesk';color:#edeff3">Season progress</span>
+            <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">6 / 20 wks</span>
+          </div>
+          <div style="position:relative;display:flex;gap:3px;height:9px">
+            <div style="flex:0 0 45%;background:#4fd1c5;border-radius:5px 2px 2px 5px;opacity:.9"></div>
+            <div style="flex:0 0 30%;background:#f5a623;border-radius:2px"></div>
+            <div style="flex:0 0 15%;background:#ff6b6b;opacity:.3;border-radius:2px"></div>
+            <div style="flex:0 0 10%;background:#9f7aea;opacity:.3;border-radius:2px 5px 5px 2px"></div>
+            <div style="position:absolute;left:30%;top:-4px;bottom:-4px;width:2px;background:#edeff3;border-radius:2px"></div>
+            <div style="position:absolute;left:30%;top:-8px;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:#edeff3;animation:pulseDot 2.4s ease-in-out infinite"></div>
+          </div>
+          <div style="display:flex;gap:13px;margin-top:11px">
+            <span style="font:500 10px 'IBM Plex Mono';color:#4fd1c5">● BASE</span>
+            <span style="font:500 10px 'IBM Plex Mono';color:#f5a623">● BUILD</span>
+            <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● PEAK</span>
+            <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">● TAPER</span>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- stats -->
+        <div style="display:flex;gap:9px;margin-top:10px">
+          <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">SESSIONS</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">{{ sessionsDone }}<span style="font-size:13px;color:#8e99ae">/6</span></div></div>
+          <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">HOURS</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">{{ hoursVal }}<span style="font-size:13px;color:#8e99ae">/7.5</span></div></div>
+          <div style="flex:1;background:#121b2e;border:1px solid #26324a;border-radius:14px;padding:12px"><div style="font:400 10px 'IBM Plex Mono';letter-spacing:.1em;color:#8e99ae">STREAK</div><div style="font:600 21px 'IBM Plex Mono';color:#edeff3;margin-top:3px">11<span style="font-size:13px;color:#8e99ae">d</span></div></div>
+        </div>
+
+        <!-- load this week -->
+        <sc-if value="{{ showLoadChart }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 11px">
+          <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Load this week</span>
+          <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">7.5h planned</span>
+        </div>
+        <div style="background:#121b2e;border:1px solid #26324a;border-radius:18px;padding:15px 16px 13px">
+          <div style="position:relative;height:132px;margin:0 -2px">
+            <div style="position:absolute;left:0;right:0;bottom:14px;top:14px">
+              <div style="position:absolute;left:0;right:0;bottom:74px;border-top:1px dashed #26324a"></div>
+              <div style="position:absolute;left:2px;bottom:70px;font:500 8px 'IBM Plex Mono';color:#54617d">2h</div>
+              <div style="position:absolute;left:0;right:0;bottom:37px;border-top:1px dashed #26324a"></div>
+              <div style="position:absolute;left:2px;bottom:33px;font:500 8px 'IBM Plex Mono';color:#54617d">1h</div>
+            </div>
+            <div style="position:absolute;inset:0;display:flex;align-items:stretch;justify-content:space-between;gap:8px">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">45m</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:28px;background:linear-gradient(180deg,#6fe0d6,#4fd1c5)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">M</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">1:00</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:37px;background:linear-gradient(180deg,#ff8585,#ff6b6b)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">T</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#6b7690">30m</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:19px;background:linear-gradient(180deg,#b49af0,#9f7aea)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">W</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;position:relative"><div style="position:absolute;top:-5px;left:-4px;right:-4px;bottom:-4px;background:rgba(245,166,35,.09);border:1px solid rgba(245,166,35,.4);border-radius:10px"></div><div style="font:700 8.5px 'IBM Plex Mono';color:#f5a623;position:relative">2:20</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px;position:relative"><div style="height:46px;background:linear-gradient(180deg,#f8bd5c,#f5a623)"></div><div style="height:25px;background:linear-gradient(180deg,#6fe0d6,#4fd1c5)"></div><div style="height:15px;background:linear-gradient(180deg,#b49af0,#9f7aea)"></div></div><span style="font:700 9px 'IBM Plex Mono';color:#f5a623;position:relative">T</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#3f4a63">rest</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#26324a"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">F</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:600 8.5px 'IBM Plex Mono';color:#8b96ac">2:50</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:12px;background:linear-gradient(180deg,#ff8585,#ff6b6b)"></div><div style="height:92px;background:linear-gradient(180deg,#f8bd5c,#f5a623)"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">S</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px"><div style="font:500 8.5px 'IBM Plex Mono';color:#3f4a63">rest</div><div style="width:100%;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><div style="height:4px;background:#26324a"></div></div><span style="font:500 9px 'IBM Plex Mono';color:#8e99ae">S</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid #26324a">
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#4fd1c5;display:block"></i>Swim</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#f5a623;display:block"></i>Bike</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#ff6b6b;display:block"></i>Run</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:8px;height:8px;border-radius:2px;background:#9f7aea;display:block"></i>Str</span>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- today header -->
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 10px">
+          <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Today · Thu</span>
+          <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">3 sessions · 2h 20m</span>
+        </div>
+
+        <!-- swim (toggle done) -->
+        <div style="background:#121b2e;border:1px solid #26324a;border-radius:14px;margin-bottom:9px;overflow:hidden">
+          <div onClick="{{ toggleSwim }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px">
+            <div style="{{ swimCheckStyle }}">✓</div>
+            <div style="flex:1;min-width:0"><div style="{{ swimTitleStyle }}">Technique · Catch &amp; Roll</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">40 MIN · RPE 4</div></div>
+            <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#4fd1c5;background:rgba(79,209,197,.13);padding:5px 8px;border-radius:999px;flex:none">SWIM</span>
+          </div>
+          <sc-if value="{{ swimResult }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 14px 12px 48px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;gap:7px;align-items:center">
+                <span style="font:600 9px 'IBM Plex Mono';color:#4fd1c5;background:rgba(79,209,197,.13);padding:4px 8px;border-radius:999px">{{ swimResult.rpe }}</span>
+                <span style="{{ swimResult.feelStyle }}">{{ swimResult.feel }}</span>
+              </div>
+              <sc-if value="{{ swimResult.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font:italic 400 11.5px/1.45 'Hanken Grotesk';color:#8e99ae">"{{ swimResult.note }}"</div></sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- bike detailed -->
+        <div style="background:#121b2e;border:1px solid #f5a623;border-radius:14px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px">
+            <div onClick="{{ toggleBike }}" style="{{ bikeCheckStyle }}">✓</div>
+            <div style="flex:1;min-width:0"><div style="{{ bikeTitleStyle }}">Threshold Intervals</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">75 MIN · RPE 7 · MAIN SESSION</div></div>
+            <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#f5a623;background:rgba(245,166,35,.13);padding:5px 8px;border-radius:999px;flex:none">BIKE</span>
+          </div>
+          <div style="padding:0 14px 13px">
+            <div style="font:italic 400 12px/1.5 'Hanken Grotesk';color:#8e99ae;margin-bottom:11px">Lifts your sustainable power. Each rep steady — the last minute hard but repeatable.</div>
+            <div style="display:flex;gap:7px">
+              <div style="flex:none;padding:8px 9px;background:#182338;border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">WARM</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">12'</div></div>
+              <div style="flex:1;padding:8px 9px;background:linear-gradient(90deg,rgba(245,166,35,.16),rgba(245,166,35,.05));border:1px solid rgba(245,166,35,.35);border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#f5a623">4 × 6 MIN @ THRESHOLD</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">RPE 7 · 3' EASY</div></div>
+              <div style="flex:none;padding:8px 9px;background:#182338;border-radius:9px;text-align:center"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">COOL</div><div style="font:600 12px 'IBM Plex Mono';color:#edeff3;margin-top:2px">9'</div></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:12px;align-items:center">
+              <div onClick="{{ startBike }}" style="cursor:pointer;flex:1;text-align:center;padding:12px;border-radius:11px;font:600 14px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">{{ bikeBtnLabel }}</div>
+              <div onClick="{{ goCoach }}" style="cursor:pointer;flex:none;display:flex;align-items:center;gap:7px;padding:12px 13px;border-radius:11px;background:#182338;border:1px solid #26324a"><span style="color:#6ee7b7;font-size:15px">⌕</span><span style="font:600 12px 'Hanken Grotesk';color:#c8cfdb">Ask</span></div>
+            </div>
+            <sc-if value="{{ bikeResult }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid #26324a;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;gap:7px;align-items:center">
+                  <span style="font:600 9px 'IBM Plex Mono';color:#0b1220;background:#4fd1c5;padding:4px 8px;border-radius:999px">✓ COMPLETED</span>
+                  <span style="font:600 9px 'IBM Plex Mono';color:#f5a623;background:rgba(245,166,35,.13);padding:4px 8px;border-radius:999px">{{ bikeResult.rpe }}</span>
+                  <span style="{{ bikeResult.feelStyle }}">{{ bikeResult.feel }}</span>
+                </div>
+                <sc-if value="{{ bikeResult.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font:italic 400 11.5px/1.45 'Hanken Grotesk';color:#8e99ae">"{{ bikeResult.note }}"</div></sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <!-- strength -->
+        <sc-if value="{{ showStrengthCard }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#121b2e;border:1px solid #26324a;border-radius:14px;margin-top:9px;overflow:hidden">
+          <div onClick="{{ toggleStr }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px">
+            <div style="{{ strCheckStyle }}">✓</div>
+            <div style="flex:1;min-width:0"><div style="{{ strTitleStyle }}">Core &amp; Glutes</div><div style="font:500 11px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">25 MIN · RPE 5 · OPTIONAL</div></div>
+            <span style="font:600 9px 'IBM Plex Mono';letter-spacing:.09em;color:#9f7aea;background:rgba(159,122,234,.13);padding:5px 8px;border-radius:999px;flex:none">STR</span>
+          </div>
+          <sc-if value="{{ strResult }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 14px 12px 48px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;gap:7px;align-items:center">
+                <span style="font:600 9px 'IBM Plex Mono';color:#9f7aea;background:rgba(159,122,234,.13);padding:4px 8px;border-radius:999px">{{ strResult.rpe }}</span>
+                <span style="{{ strResult.feelStyle }}">{{ strResult.feel }}</span>
+              </div>
+              <sc-if value="{{ strResult.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font:italic 400 11.5px/1.45 'Hanken Grotesk';color:#8e99ae">"{{ strResult.note }}"</div></sc-if>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ allDoneToday }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;background:linear-gradient(135deg,rgba(110,231,183,.14),rgba(79,209,197,.08));border:1px solid rgba(110,231,183,.4);border-radius:16px;padding:16px">
+          <div style="display:flex;align-items:center;gap:11px">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6ee7b7,#4fd1c5);display:flex;align-items:center;justify-content:center;font-size:18px;color:#0b1220;flex:none">✓</div>
+            <div style="flex:1"><div style="font:600 15px 'Hanken Grotesk';color:#edeff3">Day complete — nice work</div><div style="font:400 12px 'Hanken Grotesk';color:#8e99ae;margin-top:2px">All 3 sessions logged. Recovery is where the gains land.</div></div>
+          </div>
+          <div onClick="{{ goCoach }}" style="cursor:pointer;margin-top:12px;text-align:center;padding:11px;border-radius:11px;font:600 13px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#6ee7b7,#4fd1c5)">Review with Coach</div>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+      <sc-if value="{{ isCoach }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0">
+        <div style="padding:52px 20px 12px">
+          <div style="display:flex;align-items:center;gap:11px">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6ee7b7,#4fd1c5);display:flex;align-items:center;justify-content:center;font:700 16px 'Hanken Grotesk';color:#0b1220;flex:none">C</div>
+            <div><div style="font:600 20px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Coach</div><div style="font:400 12px 'Hanken Grotesk';color:#8e99ae">Ask anything — form, pacing, fueling, why</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:9px;margin-top:14px;background:#121b2e;border:1px solid #26324a;border-radius:12px;padding:9px 12px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#f5a623;flex:none"></span>
+            <span style="font:500 11px 'Hanken Grotesk';color:#c8cfdb;flex:1">On <b style="color:#edeff3">Threshold Intervals</b> · today's ride</span>
+            <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">clear ✕</span>
+          </div>
+        </div>
+        <!-- chat scroll -->
+        <div class="scr" style="position:absolute;top:150px;bottom:150px;left:0;right:0;overflow-y:auto;padding:4px 20px 12px;display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ messages }}" as="m" hint-placeholder-count="3">
+            <sc-if value="{{ m.isText }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ m.wrapStyle }}"><div style="{{ m.bubbleStyle }}">{{ m.text }}</div></div>
+            </sc-if>
+            <sc-if value="{{ m.isVideo }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ m.open }}" style="align-self:flex-start;max-width:86%;cursor:pointer;animation:msgIn .25s ease-out">
+                <div style="background:#121b2e;border:1px solid #26324a;border-radius:16px 16px 16px 5px;overflow:hidden;width:236px">
+                  <div style="position:relative;height:118px;background:linear-gradient(135deg,#1a2740,#0f1830);display:flex;align-items:center;justify-content:center">
+                    <span style="position:absolute;top:9px;left:11px;font:600 9px 'IBM Plex Mono';letter-spacing:.08em;color:#ff8585">▶ YOUTUBE</span>
+                    <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,107,107,.94);display:flex;align-items:center;justify-content:center;color:#0b1220;font-size:17px;padding-left:3px">▶</div>
+                  </div>
+                  <div style="padding:11px 13px 13px">
+                    <div style="font:600 13px/1.35 'Hanken Grotesk';color:#edeff3">{{ m.title }}</div>
+                    <div style="font:500 10px 'IBM Plex Mono';color:#6ee7b7;margin-top:6px">Watch demonstration ›</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </sc-for>
+          <sc-if value="{{ showThinking }}" hint-placeholder-val="{{ false }}">
+          <div style="align-self:flex-start;max-width:86%;animation:msgIn .25s ease-out"><div style="background:#121b2e;border:1px solid #26324a;border-radius:16px 16px 16px 5px;padding:13px 16px;font:400 13px 'Hanken Grotesk';color:#8e99ae">Coach is typing…</div></div>
+          </sc-if>
+          <sc-if value="{{ showChips }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:7px;align-self:flex-start;max-width:94%">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+              <span onClick="{{ c.ask }}" style="cursor:pointer;font:500 12px 'Hanken Grotesk';color:#6ee7b7;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.28);border-radius:999px;padding:7px 12px">{{ c.q }}</span>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+        <!-- input -->
+        <div style="position:absolute;bottom:96px;left:16px;right:16px;display:flex;align-items:center;gap:9px;background:#182338;border:1px solid #2f3d59;border-radius:16px;padding:8px 8px 8px 15px">
+          <input ref="{{ inputRef }}" onKeyDown="{{ onInputKey }}" placeholder="Ask your coach…" style="flex:1;background:transparent;border:none;outline:none;font:400 13px 'Hanken Grotesk';color:#edeff3;padding:6px 0" />
+          <span onClick="{{ sendTyped }}" style="cursor:pointer;width:36px;height:36px;border-radius:11px;background:#6ee7b7;display:flex;align-items:center;justify-content:center;font-size:17px;color:#0b1220;flex:none">↑</span>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CALENDAR TAB ============ -->
+      <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="position:absolute;inset:0;overflow-y:auto;padding:52px 20px 96px">
+        <!-- header -->
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font:600 23px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">{{ calTitle }}</div>
+          <div style="display:flex;gap:8px">
+            <div onClick="{{ calPrev }}" style="cursor:pointer;width:34px;height:34px;border-radius:10px;background:#121b2e;border:1px solid #26324a;display:flex;align-items:center;justify-content:center;color:#c8cfdb;font-size:15px">‹</div>
+            <div onClick="{{ calNext }}" style="cursor:pointer;width:34px;height:34px;border-radius:10px;background:#121b2e;border:1px solid #26324a;display:flex;align-items:center;justify-content:center;color:#c8cfdb;font-size:15px">›</div>
+          </div>
+        </div>
+
+        <!-- view dropdown + add workout -->
+        <div style="display:flex;gap:9px;margin-top:14px;position:relative;z-index:15">
+          <div style="position:relative">
+            <div onClick="{{ toggleViewMenu }}" style="cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:11px;background:#121b2e;border:1px solid #26324a;font:600 12px 'Hanken Grotesk';color:#edeff3">{{ viewLabel }} <span style="color:#8e99ae;font-size:9px">▼</span></div>
+            <sc-if value="{{ viewMenuOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:44px;left:0;width:132px;background:#182338;border:1px solid #2f3d59;border-radius:12px;overflow:hidden;box-shadow:0 14px 34px -8px rgba(0,0,0,.65)">
+                <div onClick="{{ setMonthView }}" style="cursor:pointer;padding:11px 14px;font:500 13px 'Hanken Grotesk';color:#edeff3">Month</div>
+                <div onClick="{{ setWeekView }}" style="cursor:pointer;padding:11px 14px;font:500 13px 'Hanken Grotesk';color:#edeff3;border-top:1px solid #26324a">Week</div>
+                <div onClick="{{ setDayView }}" style="cursor:pointer;padding:11px 14px;font:500 13px 'Hanken Grotesk';color:#edeff3;border-top:1px solid #26324a">Day</div>
+              </div>
+            </sc-if>
+          </div>
+          <div onClick="{{ openAdd }}" style="cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 13px;border-radius:11px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.4);font:600 12px 'Hanken Grotesk';color:#f5a623">＋ Add workout</div>
+        </div>
+
+        <!-- ===== MONTH VIEW ===== -->
+        <sc-if value="{{ isMonthView }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px">
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">S</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">M</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">T</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">W</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">T</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">F</div>
+            <div style="text-align:center;font:600 9px 'IBM Plex Mono';color:#54617d">S</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px">
+            <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+              <sc-if value="{{ c.blank }}" hint-placeholder-val="{{ false }}"><div></div></sc-if>
+              <sc-if value="{{ c.day }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ c.select }}" style="{{ c.cellStyle }}">
+                  <span style="{{ c.numStyle }}">{{ c.day }}</span>
+                  <div style="display:flex;gap:2px;height:5px;align-items:center">
+                    <sc-for list="{{ c.dots }}" as="dot" hint-placeholder-count="2">
+                      <i style="width:5px;height:5px;border-radius:50%;background:{{ dot }};display:block"></i>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:13px;margin-top:16px">
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:7px;height:7px;border-radius:50%;background:#4fd1c5;display:block"></i>Swim</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:7px;height:7px;border-radius:50%;background:#f5a623;display:block"></i>Bike</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:7px;height:7px;border-radius:50%;background:#ff6b6b;display:block"></i>Run</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px 'IBM Plex Mono';color:#8e99ae"><i style="width:7px;height:7px;border-radius:50%;background:#9f7aea;display:block"></i>Str</span>
+          </div>
+        </sc-if>
+
+        <!-- ===== WEEK VIEW ===== -->
+        <sc-if value="{{ isWeekView }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:6px">
+            <sc-for list="{{ calWeekDays }}" as="d" hint-placeholder-count="7">
+              <div style="margin-top:14px">
+                <div onClick="{{ d.select }}" style="{{ d.headStyle }}">
+                  <span style="font:600 12px 'IBM Plex Mono';letter-spacing:.06em">{{ d.label }} {{ d.dateNum }}</span>
+                </div>
+                <sc-if value="{{ d.noSessions }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:#0e1728;border:1px dashed #26324a;border-radius:11px"><span style="width:7px;height:7px;border-radius:50%;background:#3a4763;flex:none"></span><span style="font:500 12px 'Hanken Grotesk';color:#6b7690">Rest &amp; recovery</span></div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <sc-for list="{{ d.sessions }}" as="s" hint-placeholder-count="1">
+                    <div style="background:#121b2e;border:1px solid #26324a;border-radius:12px;overflow:hidden">
+                      <div onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer">
+                        <span style="width:9px;height:9px;border-radius:50%;background:{{ s.discColor }};flex:none"></span>
+                        <div style="flex:1;min-width:0"><div style="font:600 13px 'Hanken Grotesk';color:#edeff3">{{ s.title }}</div><div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">{{ s.meta }}</div></div>
+                        <span style="{{ s.chipStyle }}">{{ s.discLabel }}</span>
+                      </div>
+                      <sc-if value="{{ s.isOpen }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding:0 12px 12px">
+                          <div style="font:italic 400 12px/1.5 'Hanken Grotesk';color:#8e99ae;margin:0 0 10px">{{ s.summary }}</div>
+                          <div style="display:flex;flex-direction:column;gap:8px">
+                            <sc-for list="{{ s.blocks }}" as="b" hint-placeholder-count="3">
+                              <div style="display:flex;gap:9px;align-items:flex-start"><span style="{{ b.kStyle }}">{{ b.k }}</span><span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">{{ b.d }}</span></div>
+                            </sc-for>
+                          </div>
+                          <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap">
+                            <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◷ {{ s.zone }}</span>
+                            <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◆ {{ s.rpeLabel }}</span>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- ===== AGENDA (month + day views) ===== -->
+        <sc-if value="{{ showAgenda }}" hint-placeholder-val="{{ true }}">
+          <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:20px 2px 11px">{{ calAgendaLabel }}</div>
+          <sc-if value="{{ calNoSessions }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:9px;padding:14px;background:#0e1728;border:1px dashed #26324a;border-radius:13px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#3a4763;flex:none"></span>
+              <span style="font:500 13px 'Hanken Grotesk';color:#6b7690">Rest &amp; recovery — no sessions scheduled</span>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ calSessions }}" as="s" hint-placeholder-count="2">
+              <div style="background:#121b2e;border:1px solid #26324a;border-radius:13px;overflow:hidden">
+                <div onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer">
+                  <span style="width:10px;height:10px;border-radius:50%;background:{{ s.discColor }};flex:none"></span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font:600 14px 'Hanken Grotesk';color:#edeff3">{{ s.title }}</div>
+                    <div style="font:500 10.5px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">{{ s.meta }}</div>
+                  </div>
+                  <span style="{{ s.chipStyle }}">{{ s.discLabel }}</span>
+                </div>
+                <sc-if value="{{ s.isOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 13px 13px">
+                    <div style="font:italic 400 12px/1.5 'Hanken Grotesk';color:#8e99ae;margin:0 0 11px">{{ s.summary }}</div>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <sc-for list="{{ s.blocks }}" as="b" hint-placeholder-count="3">
+                        <div style="display:flex;gap:9px;align-items:flex-start">
+                          <span style="{{ b.kStyle }}">{{ b.k }}</span>
+                          <span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">{{ b.d }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+                      <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◷ {{ s.zone }}</span>
+                      <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◆ {{ s.rpeLabel }}</span>
+                      <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">⟳ {{ s.target }}</span>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- add-workout modal -->
+      <sc-if value="{{ addOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeAdd }}" style="position:absolute;inset:0;z-index:50;background:rgba(6,10,18,.7);display:flex;align-items:flex-end"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;z-index:51;background:#121b2e;border-top:1px solid #2f3d59;border-radius:24px 24px 0 0;padding:20px 20px 26px">
+          <div style="width:40px;height:4px;border-radius:3px;background:#2f3d59;margin:0 auto 16px"></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+            <div style="font:600 18px 'Hanken Grotesk';color:#edeff3">Add a workout</div>
+            <div onClick="{{ closeAdd }}" style="cursor:pointer;font:500 12px 'IBM Plex Mono';color:#8e99ae">close ✕</div>
+          </div>
+          <div style="font:400 12px 'Hanken Grotesk';color:#8e99ae;margin-bottom:16px">to {{ addTargetLabel }}</div>
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin-bottom:8px">Discipline</div>
+          <div style="display:flex;gap:7px">
+            <sc-for list="{{ discOptions }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.select }}" style="{{ o.style }}">{{ o.name }}</div>
+            </sc-for>
+          </div>
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin:16px 0 8px">Title</div>
+          <input ref="{{ addTitleRef }}" placeholder="e.g. Easy shakeout run" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:12px 13px;font:400 13px 'Hanken Grotesk';color:#edeff3;outline:none" />
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin:16px 0 8px">Duration (minutes)</div>
+          <input ref="{{ addDurRef }}" type="number" placeholder="45" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:12px 13px;font:400 13px 'IBM Plex Mono';color:#edeff3;outline:none" />
+
+          <div onClick="{{ submitAdd }}" style="cursor:pointer;margin-top:20px;text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Add to day</div>
+        </div>
+      </sc-if>
+      </sc-if>
+
+      <!-- ============ PLAN TAB ============ -->
+      <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="position:absolute;inset:0;overflow-y:auto;padding:52px 20px 96px">
+        <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623;margin-bottom:5px">IRONMAN 70.3 · OCEANSIDE</div>
+        <div style="font:600 26px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Your plan</div>
+        <div style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;margin-top:3px">20 weeks · 5 days/wk · Mar 22</div>
+
+        <!-- phase overview -->
+        <div style="margin-top:16px;background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:14px 15px 13px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <span style="font:600 12px 'Hanken Grotesk';color:#edeff3">Season phases</span>
+            <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">Week 6 of 20</span>
+          </div>
+          <div style="position:relative;display:flex;gap:3px;height:10px">
+            <div style="flex:0 0 25%;background:#4fd1c5;border-radius:5px 2px 2px 5px;opacity:.85"></div>
+            <div style="flex:0 0 40%;background:#f5a623"></div>
+            <div style="flex:0 0 20%;background:#ff6b6b;opacity:.85"></div>
+            <div style="flex:0 0 15%;background:#9f7aea;opacity:.85;border-radius:2px 5px 5px 2px"></div>
+            <div style="position:absolute;left:25%;top:-4px;bottom:-4px;width:2px;background:#edeff3;border-radius:2px"></div>
+            <div style="position:absolute;left:25%;top:-8px;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:#edeff3;animation:pulseDot 2.4s ease-in-out infinite"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:11px">
+            <span style="font:500 9.5px 'IBM Plex Mono';color:#4fd1c5">BASE 5w</span>
+            <span style="font:500 9.5px 'IBM Plex Mono';color:#f5a623">BUILD 8w</span>
+            <span style="font:500 9.5px 'IBM Plex Mono';color:#ff6b6b">PEAK 4w</span>
+            <span style="font:500 9.5px 'IBM Plex Mono';color:#9f7aea">TAPER 3w</span>
+          </div>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 10px">Week by week</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ planWeeks }}" as="w" hint-placeholder-count="6">
+            <div style="{{ w.rowStyle }}">
+              <div onClick="{{ w.toggle }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;cursor:pointer">
+                <div style="{{ w.badgeStyle }}">{{ w.badgeText }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:500 9.5px 'IBM Plex Mono';letter-spacing:.06em;color:{{ w.phaseColor }}">{{ w.tag }}</div>
+                  <div style="font:600 14px 'Hanken Grotesk';color:#edeff3;margin-top:2px">{{ w.focus }}</div>
+                </div>
+                <div style="text-align:right;flex:none">
+                  <div style="font:600 13px 'IBM Plex Mono';color:#edeff3">{{ w.hours }}</div>
+                  <div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">{{ w.sessions }}</div>
+                </div>
+              </div>
+              <sc-if value="{{ w.isOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:2px 12px 13px;border-top:1px solid #1e2a42">
+                  <sc-for list="{{ w.days }}" as="d" hint-placeholder-count="7">
+                    <div style="margin-top:11px">
+                      <div style="display:flex;align-items:baseline;gap:8px;margin:0 2px 7px">
+                        <span style="font:600 11px 'IBM Plex Mono';letter-spacing:.08em;color:#c8cfdb">{{ d.label }}</span>
+                        <span style="font:500 10px 'IBM Plex Mono';color:#54617d">{{ d.sub }}</span>
+                      </div>
+                      <sc-if value="{{ d.isRest }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:#0e1728;border:1px dashed #26324a;border-radius:11px">
+                          <span style="width:7px;height:7px;border-radius:50%;background:#3a4763;flex:none"></span>
+                          <span style="font:500 12px 'Hanken Grotesk';color:#6b7690">Rest &amp; recovery</span>
+                        </div>
+                      </sc-if>
+                      <sc-for list="{{ d.sessions }}" as="s" hint-placeholder-count="1">
+                        <div style="background:#0e1728;border:1px solid #26324a;border-radius:11px;overflow:hidden;margin-bottom:7px">
+                          <div onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer">
+                            <span style="width:9px;height:9px;border-radius:50%;background:{{ s.discColor }};flex:none"></span>
+                            <div style="flex:1;min-width:0">
+                              <div style="font:600 13px 'Hanken Grotesk';color:#edeff3">{{ s.title }}</div>
+                              <div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">{{ s.meta }}</div>
+                            </div>
+                            <span style="{{ s.chipStyle }}">{{ s.discLabel }}</span>
+                          </div>
+                          <sc-if value="{{ s.isOpen }}" hint-placeholder-val="{{ false }}">
+                            <div style="padding:0 12px 12px">
+                              <div style="font:italic 400 12px/1.5 'Hanken Grotesk';color:#8e99ae;margin:0 0 11px">{{ s.summary }}</div>
+                              <div style="display:flex;flex-direction:column;gap:8px">
+                                <sc-for list="{{ s.blocks }}" as="b" hint-placeholder-count="3">
+                                  <div style="display:flex;gap:9px;align-items:flex-start">
+                                    <span style="{{ b.kStyle }}">{{ b.k }}</span>
+                                    <span style="font:400 12px/1.45 'Hanken Grotesk';color:#c8cfdb">{{ b.d }}</span>
+                                  </div>
+                                </sc-for>
+                              </div>
+                              <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+                                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◷ {{ s.zone }}</span>
+                                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">◆ {{ s.rpeLabel }}</span>
+                                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae;background:#182338;padding:5px 9px;border-radius:7px">⟳ {{ s.target }}</span>
+                              </div>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ w.isCurrent }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ goHome }}" style="cursor:pointer;margin-top:13px;display:inline-block;padding:9px 15px;border-radius:10px;font:600 12px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Open this week ›</div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ FUEL TAB ============ -->
+      <sc-if value="{{ isFuel }}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="position:absolute;inset:0;overflow-y:auto;padding:52px 20px 96px">
+        <div style="font:500 11px 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623;margin-bottom:5px">FUELING · BUILD PHASE</div>
+        <div style="font:600 26px 'Hanken Grotesk';color:#edeff3;letter-spacing:-.01em">Fuel</div>
+        <div style="font:400 12.5px 'Hanken Grotesk';color:#8e99ae;margin-top:3px">Big training day · fuel for the work required</div>
+
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 11px">
+          <span style="font:600 16px 'Hanken Grotesk';color:#edeff3">Today's targets</span>
+          <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">tap to log ↓</span>
+        </div>
+        <div style="background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:15px 16px;display:flex;flex-direction:column;gap:13px">
+          <sc-for list="{{ macros }}" as="mm" hint-placeholder-count="4">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span style="font:600 12px 'Hanken Grotesk';color:#edeff3">{{ mm.name }}</span>
+                <span style="font:500 11px 'IBM Plex Mono';color:#8e99ae">{{ mm.consumed }} / {{ mm.target }} {{ mm.unit }}</span>
+              </div>
+              <div style="height:9px;background:#182338;border-radius:6px;overflow:hidden"><div style="{{ mm.barStyle }}"></div></div>
+            </div>
+          </sc-for>
+          <div style="font:400 10.5px/1.5 'Hanken Grotesk';color:#8e99ae;border-top:1px solid #26324a;padding-top:11px">Scaled to a ~70 kg athlete on a big day: ≈8 g/kg carbohydrate and 1.8 g/kg protein — within the 7–12 g/kg carb and 1.5–2.0 g/kg protein ranges endurance-nutrition guidelines set for heavy training.</div>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 11px">Log fuel</div>
+        <div style="display:flex;gap:8px;margin-bottom:9px">
+          <div onClick="{{ openManual }}" style="cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:13px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.4);font:600 13px 'Hanken Grotesk';color:#f5a623">✎ Add food / product</div>
+        </div>
+        <sc-if value="{{ lastLogged }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:9px 12px;background:rgba(79,209,197,.08);border:1px solid rgba(79,209,197,.25);border-radius:11px">
+            <span style="width:18px;height:18px;border-radius:6px;background:#4fd1c5;color:#0b1220;display:flex;align-items:center;justify-content:center;font:700 10px 'Hanken Grotesk';flex:none">✓</span>
+            <span style="font:500 12px 'Hanken Grotesk';color:#c8cfdb">Logged <b style="color:#edeff3">{{ lastLogged }}</b></span>
+          </div>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <sc-for list="{{ quickAdds }}" as="q" hint-placeholder-count="6">
+            <div onClick="{{ q.add }}" style="cursor:pointer;background:#121b2e;border:1px solid #26324a;border-radius:13px;padding:11px 12px">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font:600 13px 'Hanken Grotesk';color:#edeff3">{{ q.label }}</span>
+                <span style="width:22px;height:22px;border-radius:7px;background:rgba(245,166,35,.14);color:#f5a623;display:flex;align-items:center;justify-content:center;font:700 14px 'Hanken Grotesk';flex:none">＋</span>
+              </div>
+              <div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:4px">{{ q.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 11px">Fuel history</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ fuelDays }}" as="day" hint-placeholder-count="2">
+            <div style="background:#121b2e;border:1px solid #26324a;border-radius:16px;overflow:hidden">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:13px 15px 11px;border-bottom:1px solid #1e2a42">
+                <span style="font:600 13px 'Hanken Grotesk';color:#edeff3">{{ day.dayLabel }}</span>
+                <span style="font:500 10px 'IBM Plex Mono';color:#8e99ae">{{ day.count }} items</span>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ day.entries }}" as="e" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 15px;border-bottom:1px solid #16202f">
+                    <span style="width:8px;height:8px;border-radius:50%;background:{{ e.dotColor }};flex:none;margin-top:5px"></span>
+                    <div style="flex:1;min-width:0">
+                      <div style="font:600 13px 'Hanken Grotesk';color:#edeff3">{{ e.name }}</div>
+                      <div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">{{ e.meta }}</div>
+                    </div>
+                    <span style="font:500 10.5px 'IBM Plex Mono';color:#6b7690;flex:none">{{ e.time }}</span>
+                  </div>
+                </sc-for>
+                <div style="padding:11px 15px;font:500 10.5px 'IBM Plex Mono';color:#c8cfdb;background:#0e1728">Day total · {{ day.summary }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 11px">During today's ride</div>
+        <div style="background:#121b2e;border:1px solid #f5a623;border-radius:16px;padding:15px 16px">
+          <div style="display:flex;gap:8px;margin-bottom:13px">
+            <div style="flex:1;background:#182338;border-radius:10px;padding:9px;text-align:center"><div style="font:600 15px 'IBM Plex Mono';color:#f5a623">60<span style="font-size:10px;color:#8e99ae">g/hr</span></div><div style="font:500 8.5px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">CARBS</div></div>
+            <div style="flex:1;background:#182338;border-radius:10px;padding:9px;text-align:center"><div style="font:600 15px 'IBM Plex Mono';color:#4fd1c5">600<span style="font-size:10px;color:#8e99ae">ml</span></div><div style="font:500 8.5px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">FLUID/HR</div></div>
+            <div style="flex:1;background:#182338;border-radius:10px;padding:9px;text-align:center"><div style="font:600 15px 'IBM Plex Mono';color:#9f7aea">500<span style="font-size:10px;color:#8e99ae">mg</span></div><div style="font:500 8.5px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">SODIUM/HR</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ sessFuelItems }}" as="it" hint-placeholder-count="4">
+              <div onClick="{{ it.toggle }}" style="cursor:pointer;display:flex;align-items:center;gap:11px">
+                <span style="{{ it.checkStyle }}">✓</span>
+                <span style="font:500 12.5px 'Hanken Grotesk';color:#c8cfdb">{{ it.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font:400 10.5px/1.5 'Hanken Grotesk';color:#8e99ae;border-top:1px solid #26324a;padding-top:11px;margin-top:12px">Sessions over ~2 hr call for 60–90 g/hr. Past 60 g/hr use a glucose : fructose mix (≈2:1) so a second gut transporter shares the load and you absorb more with less GI distress.</div>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 11px">Gut training</div>
+        <div style="background:#121b2e;border:1px solid #26324a;border-radius:16px;padding:15px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px">
+            <span style="font:600 13px 'Hanken Grotesk';color:#edeff3">Carb tolerance · {{ gut.currentLabel }}</span>
+            <span style="font:500 10.5px 'IBM Plex Mono';color:#f5a623">{{ gut.targetLabel }}</span>
+          </div>
+          <div style="height:9px;background:#182338;border-radius:6px;overflow:hidden"><div style="{{ gut.barStyle }}"></div></div>
+          <div style="font:400 11.5px/1.5 'Hanken Grotesk';color:#8e99ae;margin-top:10px">Training your gut to absorb more carbs per hour so race-day fueling never limits you. Nudge intake up on long rides.</div>
+        </div>
+
+        <div style="font:600 16px 'Hanken Grotesk';color:#edeff3;margin:18px 2px 11px">Race-day plan</div>
+        <div style="background:radial-gradient(120% 80% at 100% 0%,#1a2740,#121b2e);border:1px solid #26324a;border-radius:16px;padding:15px 16px">
+          <div style="font:600 14px 'Hanken Grotesk';color:#edeff3">Oceanside 70.3</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px">
+            <div style="background:#0e1728;border-radius:10px;padding:10px"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">BIKE CARBS</div><div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin-top:2px">70–90 g/hr</div></div>
+            <div style="background:#0e1728;border-radius:10px;padding:10px"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">RUN CARBS</div><div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin-top:2px">45–60 g/hr</div></div>
+            <div style="background:#0e1728;border-radius:10px;padding:10px"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">FLUID</div><div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin-top:2px">500–750 ml/hr</div></div>
+            <div style="background:#0e1728;border-radius:10px;padding:10px"><div style="font:500 9px 'IBM Plex Mono';color:#8e99ae">SODIUM</div><div style="font:600 13px 'Hanken Grotesk';color:#edeff3;margin-top:2px">500–1000 mg/hr</div></div>
+          </div>
+          <div style="font:400 10.5px/1.5 'Hanken Grotesk';color:#8e99ae;margin-top:12px">Load the bike — it's easier to absorb than on the run, where blood flow to the gut drops. Drink to thirst, aiming to keep fluid loss under 2–3% of body weight, and rehearse every number in training before you race it.</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ FUEL LOG SHEET ============ -->
+      <sc-if value="{{ fuelSheet }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeFuelSheet }}" style="position:absolute;inset:0;z-index:50;background:rgba(6,10,18,.72)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;z-index:51;background:#121b2e;border-top:1px solid #2f3d59;border-radius:24px 24px 0 0;padding:20px 20px 26px">
+          <div style="width:40px;height:4px;border-radius:3px;background:#2f3d59;margin:0 auto 16px"></div>
+
+          <!-- MANUAL ENTRY -->
+          <sc-if value="{{ isManualSheet }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+              <div style="font:600 18px 'Hanken Grotesk';color:#edeff3">Add food / product</div>
+              <div onClick="{{ closeFuelSheet }}" style="cursor:pointer;font:500 12px 'IBM Plex Mono';color:#8e99ae">close ✕</div>
+            </div>
+            <div style="font:400 12px 'Hanken Grotesk';color:#8e99ae;margin-bottom:16px">Enter what's on the label — it adds to today's totals</div>
+            <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin-bottom:8px">Product name</div>
+            <input ref="{{ pNameRef }}" placeholder="e.g. Homemade rice cake" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:12px 13px;font:400 13px 'Hanken Grotesk';color:#edeff3;outline:none" />
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+              <div>
+                <div style="font:600 11px 'Hanken Grotesk';color:#f5a623;margin-bottom:7px">Carbs (g)</div>
+                <input ref="{{ pCarbRef }}" type="number" placeholder="0" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:11px 13px;font:400 13px 'IBM Plex Mono';color:#edeff3;outline:none" />
+              </div>
+              <div>
+                <div style="font:600 11px 'Hanken Grotesk';color:#ff6b6b;margin-bottom:7px">Protein (g)</div>
+                <input ref="{{ pProteinRef }}" type="number" placeholder="0" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:11px 13px;font:400 13px 'IBM Plex Mono';color:#edeff3;outline:none" />
+              </div>
+              <div>
+                <div style="font:600 11px 'Hanken Grotesk';color:#9f7aea;margin-bottom:7px">Sodium (mg)</div>
+                <input ref="{{ pSodiumRef }}" type="number" placeholder="0" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:11px 13px;font:400 13px 'IBM Plex Mono';color:#edeff3;outline:none" />
+              </div>
+              <div>
+                <div style="font:600 11px 'Hanken Grotesk';color:#4fd1c5;margin-bottom:7px">Fluid (ml)</div>
+                <input ref="{{ pFluidRef }}" type="number" placeholder="0" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:11px 13px;font:400 13px 'IBM Plex Mono';color:#edeff3;outline:none" />
+              </div>
+            </div>
+            <div onClick="{{ submitManualFuel }}" style="cursor:pointer;margin-top:20px;text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#ff6b6b,#f5a623)">Log product</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ============ POST-WORKOUT COMPLETION SHEET ============ -->
+      <sc-if value="{{ completeOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeComplete }}" style="position:absolute;inset:0;z-index:50;background:rgba(6,10,18,.72)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;z-index:51;background:#121b2e;border-top:1px solid #2f3d59;border-radius:24px 24px 0 0;padding:20px 20px 26px">
+          <div style="width:40px;height:4px;border-radius:3px;background:#2f3d59;margin:0 auto 16px"></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+            <div style="font:600 18px 'Hanken Grotesk';color:#edeff3">Log this session</div>
+            <div onClick="{{ closeComplete }}" style="cursor:pointer;font:500 12px 'IBM Plex Mono';color:#8e99ae">close ✕</div>
+          </div>
+          <div style="font:400 12px 'Hanken Grotesk';color:#8e99ae;margin-bottom:18px">{{ csTitle }} · {{ csMin }} min</div>
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin-bottom:8px">How hard did it feel? (RPE)</div>
+          <div style="display:flex;gap:5px">
+            <sc-for list="{{ rpeChips }}" as="r" hint-placeholder-count="10">
+              <div onClick="{{ r.pick }}" style="{{ r.style }}">{{ r.n }}</div>
+            </sc-for>
+          </div>
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin:18px 0 8px">Overall</div>
+          <div style="display:flex;gap:7px">
+            <sc-for list="{{ feelOpts }}" as="f" hint-placeholder-count="4">
+              <div onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</div>
+            </sc-for>
+          </div>
+
+          <div style="font:600 11px 'Hanken Grotesk';color:#c8cfdb;margin:18px 0 8px">Notes <span style="color:#54617d;font-weight:400">(optional)</span></div>
+          <input ref="{{ noteRef }}" placeholder="How were the legs? Anything to flag?" style="width:100%;box-sizing:border-box;background:#182338;border:1px solid #2f3d59;border-radius:12px;padding:12px 13px;font:400 13px 'Hanken Grotesk';color:#edeff3;outline:none" />
+
+          <div onClick="{{ toggleDraftFuel }}" style="cursor:pointer;display:flex;align-items:center;gap:11px;margin-top:16px;padding:12px 13px;background:#0e1728;border:1px solid #26324a;border-radius:12px">
+            <span style="{{ fuelToggleStyle }}">✓</span>
+            <div style="flex:1"><div style="font:600 12.5px 'Hanken Grotesk';color:#edeff3">Log recovery nutrition</div><div style="font:500 10px 'IBM Plex Mono';color:#8e99ae;margin-top:2px">Recovery shake · 30g carb · 25g protein</div></div>
+          </div>
+
+          <div onClick="{{ confirmComplete }}" style="cursor:pointer;margin-top:20px;text-align:center;padding:15px;border-radius:13px;font:600 15px 'Hanken Grotesk';color:#0b1220;background:linear-gradient(135deg,#6ee7b7,#4fd1c5)">Mark complete ✓</div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BOTTOM NAV ============ -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:88px;background:rgba(11,18,32,.92);backdrop-filter:blur(12px);border-top:1px solid #26324a;display:flex;justify-content:space-around;align-items:flex-start;padding-top:11px;z-index:20">
+        <div onClick="{{ goHome }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:{{ navHome }}"><span style="font-size:16px">◈</span>Home</div>
+        <div onClick="{{ goCalendar }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:{{ navCal }}"><span style="font-size:16px">▦</span>Calendar</div>
+        <div onClick="{{ goPlan }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:{{ navPlan }}"><span style="font-size:16px">▤</span>Plan</div>
+        <div onClick="{{ goLog }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:{{ navLog }}"><span style="font-size:16px">◍</span>Fuel</div>
+        <div onClick="{{ goCoach }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px 'Hanken Grotesk';color:{{ navCoach }}"><span style="font-size:16px">⌕</span>Coach</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:918},&quot;startTab&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Home&quot;,&quot;Coach&quot;],&quot;default&quot;:&quot;Home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;showSeasonProgress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home layout&quot;},&quot;showLoadChart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home layout&quot;},&quot;showStrengthCard&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home layout&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.inputRef = React.createRef();
+    this.addTitleRef = React.createRef();
+    this.addDurRef = React.createRef();
+    this.pNameRef = React.createRef();
+    this.pCarbRef = React.createRef();
+    this.pProteinRef = React.createRef();
+    this.pSodiumRef = React.createRef();
+    this.pFluidRef = React.createRef();
+    this.noteRef = React.createRef();
+    this.SESSIONS = {
+      swim: { title:'Technique · Catch & Roll', disc:'Swim', color:'#4fd1c5', min:40, plannedRpe:4 },
+      bike: { title:'Threshold Intervals', disc:'Bike', color:'#f5a623', min:75, plannedRpe:7 },
+      str:  { title:'Core & Glutes', disc:'Strength', color:'#9f7aea', min:25, plannedRpe:5 }
+    };
+    this.state = {
+      tab: (props.startTab || 'Home').toLowerCase(),
+      results: { swim: { rpe:4, feel:'Solid', note:'Smooth catch, relaxed roll' } },
+      completeSheet: null,
+      draftRpe: 5,
+      draftFeel: 'Solid',
+      draftFuel: true,
+      thinking: false,
+      expandedWeek: 6,
+      expandedWorkout: null,
+      monthOffset: 0,
+      selectedDay: '2026-03-12',
+      expandedCalWo: null,
+      calView: 'month',
+      viewMenuOpen: false,
+      addOpen: false,
+      addDisc: 'Run',
+      custom: {},
+      fuel: { carbs:210, protein:58, fluid:1400, sodium:1600 },
+      fuelLog: {
+        '2026-03-12': [
+          { name:'Oats & berries', time:'06:50', d:{carbs:55,protein:12,sodium:60} },
+          { name:'Banana', time:'07:20', d:{carbs:27} },
+          { name:'Recovery shake', time:'10:15', d:{carbs:30,protein:25,fluid:400} },
+          { name:'Chicken & rice bowl', time:'12:40', d:{carbs:98,protein:21,sodium:540} },
+          { name:'Electrolyte bottle', time:'13:30', d:{fluid:1000,sodium:1000} }
+        ],
+        '2026-03-11': [
+          { name:'Overnight oats', time:'07:00', d:{carbs:62,protein:14,sodium:70} },
+          { name:'Drink-mix bottle', time:'09:30', d:{carbs:40,fluid:500,sodium:300} },
+          { name:'Turkey & sweet potato', time:'13:00', d:{carbs:85,protein:38,sodium:620} },
+          { name:'Greek yogurt & honey', time:'20:30', d:{carbs:34,protein:18} }
+        ]
+      },
+      sessFuel: { pre:false, mid:false, late:false, bottle:false },
+      fuelSheet: null,
+      lastLogged: null,
+      messages: [
+        { role:'coach', text:"Hey Alex — this is the key session of your week. Ask me anything about it, or tap a question below to start." }
+      ],
+      answered: false
+    };
+    this.answers = {
+      "What cadence for the reps?": "Aim for 85–95 rpm — smooth and strong, not grinding. Threshold is steady pressure you could just barely hold for an hour, so let effort (RPE 7) lead and the legs settle into that cadence.",
+      "Is RPE 7 too hard?": "RPE 7 should feel 'comfortably hard' — you can speak a short sentence but wouldn't want to. If you're gasping, ease off; the goal is repeatable reps, not a race.",
+      "Can I do it on a trainer?": "Absolutely — a trainer is ideal here. Steady resistance makes it easy to hold each 6-min rep even, with no coasting or traffic to break the effort.",
+      "How do I fuel it?": "For 75 min, sip an electrolyte bottle throughout and take ~30g carbs (a gel or half a banana) about 40 min in. Nothing heavy — this is quality, not endurance."
+    };
+    this.fallback = "Keep the effort steady and repeatable — smooth cadence, controlled reps, RPE 7. If a rep feels ragged, back off slightly rather than pushing into the red.";
+    this.days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    this.weekMeta = [
+      'Aerobic foundation','Easy consistency','Building endurance','Longer aerobic sessions','Base peak week',
+      'Threshold intro','Threshold volume','Sustained tempo','Recovery & absorb','Race-pace intervals',
+      'Big brick weekend','Peak build volume','Sharpen & absorb','Race simulation','Sharpening intensity',
+      'Peak long brick','Final hard week','Taper begins','Freshen up','Race week'
+    ];
+    // workout library — every session has full structured detail
+    this.lib = {
+      swim_endur:{ disc:'Swim', title:'Endurance · Steady Aerobic', dur:55, rpe:5, zone:'Zone 2', target:'CSS + 8s/100m · smooth', summary:'Continuous aerobic swimming to build endurance and feel for the water.',
+        blocks:[{k:'WARM UP',d:'400m easy free + 6×50 build (25 easy / 25 fast)'},{k:'MAIN SET',d:'5×200m @ CSS + 8s, 20s rest — descend 1→3'},{k:'COOL DOWN',d:'200m easy backstroke / choice'}] },
+      swim_tech:{ disc:'Swim', title:'Technique · Catch & Roll', dur:40, rpe:4, zone:'Zone 1–2', target:'Drills · high stroke efficiency', summary:'Skill session grooving an early catch and a clean body roll.',
+        blocks:[{k:'WARM UP',d:'300m easy + 4×50 build'},{k:'MAIN SET',d:'8×50 drill (catch-up, single-arm, scull) · 4×100 smooth swim, 20s rest'},{k:'COOL DOWN',d:'200m easy, long strokes'}] },
+      swim_css:{ disc:'Swim', title:'Threshold · CSS Intervals', dur:50, rpe:7, zone:'Zone 4', target:'At CSS pace · 15s rest', summary:'Critical swim speed work to lift your sustainable pace.',
+        blocks:[{k:'WARM UP',d:'400m mixed + 6×50 build'},{k:'MAIN SET',d:'10×100m @ CSS pace, 15s rest'},{k:'COOL DOWN',d:'200m easy'}] },
+      bike_endur:{ disc:'Bike', title:'Endurance · Zone 2 Ride', dur:90, rpe:4, zone:'Zone 2', target:'85–90 rpm · 56–75% FTP', summary:'Steady aerobic ride building fat-burning endurance.',
+        blocks:[{k:'WARM UP',d:'15min easy, building to Zone 2'},{k:'MAIN SET',d:'Steady Zone 2 @ 85–90 rpm — smooth, circular pedal stroke'},{k:'COOL DOWN',d:'10min easy spin'}] },
+      bike_thresh:{ disc:'Bike', title:'Threshold Intervals', dur:75, rpe:7, zone:'Zone 4', target:'85–95 rpm · 95–105% FTP', summary:'Lifts your sustainable power. Each rep steady — the last minute hard but repeatable.',
+        blocks:[{k:'WARM UP',d:'12min easy + 3×30s cadence spin-ups'},{k:'MAIN SET',d:'4×6min @ threshold (RPE 7), 3min easy recovery'},{k:'COOL DOWN',d:'9min Zone 1 spin'}] },
+      bike_vo2:{ disc:'Bike', title:'VO2 · Short & Sharp', dur:70, rpe:8, zone:'Zone 5', target:'95–100 rpm · 110–120% FTP', summary:'High-intensity intervals to raise your aerobic ceiling.',
+        blocks:[{k:'WARM UP',d:'15min easy + 4×30s openers'},{k:'MAIN SET',d:'6×3min @ VO2 (RPE 8), 3min easy between'},{k:'COOL DOWN',d:'10min easy'}] },
+      bike_race:{ disc:'Bike', title:'Race Pace · 70.3 Effort', dur:120, rpe:6, zone:'Zone 3', target:'80–90 rpm · 80–88% FTP', summary:'Long ride rehearsing goal race power and fueling.',
+        blocks:[{k:'WARM UP',d:'20min building to Zone 2'},{k:'MAIN SET',d:'3×20min @ 70.3 power (RPE 6), 5min easy · practice fueling every 20min'},{k:'COOL DOWN',d:'15min easy'}] },
+      run_easy:{ disc:'Run', title:'Easy Aerobic Run', dur:45, rpe:3, zone:'Zone 2', target:'5:40–6:10 /km · relaxed', summary:'Conversational run to build aerobic base and aid recovery.',
+        blocks:[{k:'WARM UP',d:'10min easy jog'},{k:'MAIN SET',d:'30min relaxed Zone 2, cadence ~180 spm'},{k:'COOL DOWN',d:'5min easy + 4 strides'}] },
+      run_tempo:{ disc:'Run', title:'Tempo · Threshold Run', dur:55, rpe:7, zone:'Zone 4', target:'At threshold pace · quick turnover', summary:'Sustained efforts to build lactate threshold.',
+        blocks:[{k:'WARM UP',d:'12min easy'},{k:'MAIN SET',d:'3×8min @ threshold pace, 2min jog recovery'},{k:'COOL DOWN',d:'8min easy'}] },
+      run_long:{ disc:'Run', title:'Long Run · Aerobic', dur:80, rpe:4, zone:'Zone 2', target:'Conversational · negative split', summary:'Progressive long run building endurance for the half.',
+        blocks:[{k:'WARM UP',d:'10min easy'},{k:'MAIN SET',d:'60min steady Zone 2 — last 15min slightly quicker'},{k:'COOL DOWN',d:'10min easy walk/jog'}] },
+      str_core:{ disc:'Strength', title:'Core & Glutes', dur:25, rpe:5, zone:'Stability', target:'Body-weight circuit', summary:'Targeted core and glute work for durable running and riding form.',
+        blocks:[{k:'ACTIVATION',d:'5min — glute bridges, band walks'},{k:'MAIN SET',d:'3 rounds: plank 45s, side plank 30s/side, single-leg glute bridge ×12, bird-dog ×10, dead bug ×10'},{k:'MOBILITY',d:'5min hips + t-spine'}] },
+      str_full:{ disc:'Strength', title:'Strength · Full Body', dur:40, rpe:6, zone:'Strength', target:'Compound lifts · 3–4 sets', summary:'Full-body strength to support power and injury resistance.',
+        blocks:[{k:'WARM UP',d:'8min dynamic warm-up'},{k:'MAIN SET',d:'3–4 sets: squat, deadlift, step-up, single-leg RDL, push-up — 8–10 reps'},{k:'COOL DOWN',d:'7min stretch'}] },
+      brick:{ disc:'Brick', title:'Brick · Ride + Run', dur:170, rpe:6, zone:'Zone 2–3', target:'Race sim · quick transition', summary:'The key weekend session — a long ride straight into a run to train race-day legs.',
+        blocks:[{k:'BIKE',d:'2h30 steady Zone 2–3 @ 85 rpm, practice race fueling'},{k:'TRANSITION',d:'Quick change — rack bike, shoes on, out the door in under 5min'},{k:'RUN',d:'20min off the bike at race effort (RPE 6), find a quick cadence'}] },
+      race:{ disc:'Race', title:'Race Day · Oceanside 70.3', dur:0, rpe:null, zone:'Race', target:'1.2 · 56 · 13.1 mi', summary:'Everything you built for. Trust the taper, execute your pacing, and enjoy it.',
+        blocks:[{k:'SWIM',d:'1.2 mi — settle into rhythm early, sight often'},{k:'BIKE',d:'56 mi — hold goal power, fuel every 20min'},{k:'RUN',d:'13.1 mi — start controlled, negative split home'}] }
+    };
+    // Mon..Sun schedules per phase (arrays of session keys; [] = rest)
+    this.sched = {
+      base:     [['swim_endur'],['run_easy'],['str_core'],['swim_tech'],[],['bike_endur'],['run_long']],
+      build:    [['swim_endur'],['run_tempo'],['str_core'],['swim_tech','bike_thresh','str_core'],[],['brick'],[]],
+      recovery: [['swim_tech'],['run_easy'],[],['bike_endur'],[],['run_long'],[]],
+      peak:     [['swim_css'],['run_tempo'],['str_full'],['swim_tech','bike_vo2'],[],['brick'],['run_long']],
+      taper:    [['swim_tech'],['run_easy'],['str_core'],['bike_thresh'],[],['bike_endur'],[]],
+      race:     [['swim_tech'],[],['bike_endur'],[],['run_easy'],[],['race']]
+    };
+    this.DISC = { Swim:'#4fd1c5', Bike:'#f5a623', Run:'#ff6b6b', Strength:'#9f7aea', Brick:'#f5a623', Race:'#ffd166' };
+    this.FUELTARGET = { carbs:560, protein:126, fluid:3500, sodium:4000 };
+    this.QUICKADD = [
+      { label:'Energy gel', sub:'25g carb · 100mg', d:{carbs:25,sodium:100} },
+      { label:'Banana', sub:'27g carb', d:{carbs:27} },
+      { label:'Drink-mix bottle', sub:'40g · 500ml · 300mg', d:{carbs:40,fluid:500,sodium:300} },
+      { label:'Water 750ml', sub:'750ml fluid', d:{fluid:750} },
+      { label:'Recovery shake', sub:'30g · 25g pro', d:{carbs:30,protein:25,fluid:400} },
+      { label:'Rice & chicken', sub:'80g · 40g pro', d:{carbs:80,protein:40} },
+      { label:'Electrolyte tab', sub:'500mg · 250ml', d:{sodium:500,fluid:250} },
+      { label:'Oats & berries', sub:'55g · 12g pro', d:{carbs:55,protein:12} }
+    ];
+  }
+  buildSession(key, id, openId){
+    const wo = this.lib[key], dc = this.DISC[wo.disc];
+    const meta = key==='race' ? '1.2 · 56 · 13.1 mi' : wo.dur+' min · RPE '+wo.rpe+' · '+wo.zone;
+    return {
+      id, title:wo.title, disc:wo.disc, discColor:dc, discLabel:wo.disc.toUpperCase(),
+      chipStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.06em;color:"+dc+";background:"+dc+"22;padding:4px 7px;border-radius:999px;flex:none",
+      meta, summary:wo.summary, target:wo.target, zone:wo.zone,
+      rpeLabel: wo.rpe==null ? 'RACE' : 'RPE '+wo.rpe,
+      blocks: wo.blocks.map(b=>({ k:b.k, d:b.d, kStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.05em;color:"+dc+";background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px" })),
+      isOpen: openId===id,
+      toggle:()=>this.setState(s=>({ expandedCalWo: s.expandedCalWo===id?null:id }))
+    };
+  }
+  buildCustomSession(c, id, openId){
+    const dc = this.DISC[c.disc] || '#8e99ae';
+    const meta = c.dur+' min · Added by you';
+    return {
+      id, title:c.title, disc:c.disc, discColor:dc, discLabel:c.disc.toUpperCase(),
+      chipStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.06em;color:"+dc+";background:"+dc+"22;padding:4px 7px;border-radius:999px;flex:none",
+      meta, summary:'A workout you added to this day.', target:'—', zone:c.disc,
+      rpeLabel:'CUSTOM',
+      blocks:[{ k:'SESSION', d:c.title+' — '+c.dur+' min', kStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.05em;color:"+dc+";background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px" }],
+      isCustom:true, isOpen:openId===id,
+      toggle:()=>this.setState(s=>({ expandedCalWo: s.expandedCalWo===id?null:id }))
+    };
+  }
+  submitAdd(){
+    const t = (this.addTitleRef.current && this.addTitleRef.current.value || '').trim();
+    if(!t) return;
+    const dur = parseInt(this.addDurRef.current && this.addDurRef.current.value, 10);
+    const iso = this.state.selectedDay;
+    const c = { title:t, disc:this.state.addDisc, dur: isNaN(dur)?45:dur };
+    this.setState(s=>({ custom:{ ...s.custom, [iso]:[...(s.custom[iso]||[]), c] }, addOpen:false }));
+    if(this.addTitleRef.current) this.addTitleRef.current.value='';
+    if(this.addDurRef.current) this.addDurRef.current.value='';
+  }
+  addFuel(name, d){
+    const now = new Date();
+    const time = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    const today = '2026-03-12';
+    this.setState(s=>{
+      const f={...s.fuel}; for(const k in d) f[k]=(f[k]||0)+d[k];
+      const log={...s.fuelLog};
+      log[today]=[...(log[today]||[]), { name, time, d:{...d} }];
+      return { fuel:f, fuelLog:log };
+    });
+  }
+  openFuelSheet(mode){ this.setState({ fuelSheet:mode }); }
+  closeFuelSheet(){ this.setState({ fuelSheet:null }); }
+  openComplete(key){
+    if(this.state.results[key]){
+      // already done → un-complete
+      this.setState(s=>{ const r={...s.results}; delete r[key]; return { results:r }; });
+      return;
+    }
+    this.setState({ completeSheet:key, draftRpe:this.SESSIONS[key].plannedRpe, draftFeel:'Solid', draftFuel:true });
+  }
+  closeComplete(){ this.setState({ completeSheet:null }); }
+  confirmComplete(){
+    const key=this.state.completeSheet; if(!key) return;
+    const note=(this.noteRef.current && this.noteRef.current.value || '').trim();
+    const res={ rpe:this.state.draftRpe, feel:this.state.draftFeel, note };
+    const logFuel=this.state.draftFuel;
+    this.setState(s=>({ results:{...s.results, [key]:res}, completeSheet:null }));
+    if(logFuel) this.addFuel('Recovery shake', { carbs:30, protein:25, fluid:400 });
+  }
+  submitManualFuel(){
+    const name = (this.pNameRef.current && this.pNameRef.current.value || '').trim();
+    if(!name) return;
+    const num = (ref)=>{ const v = parseFloat(ref.current && ref.current.value); return isNaN(v)?0:v; };
+    const d = { carbs:num(this.pCarbRef), protein:num(this.pProteinRef), sodium:num(this.pSodiumRef), fluid:num(this.pFluidRef) };
+    this.addFuel(name, d);
+    this.setState({ lastLogged:name });
+    this.closeFuelSheet();
+  }
+  patternKey(n){
+    if(n<=5) return 'base';
+    if(n===9||n===13) return 'recovery';
+    if(n<=13) return 'build';
+    if(n<=17) return 'peak';
+    if(n===20) return 'race';
+    return 'taper';
+  }
+  setTab(t){ this.setState({ tab: t }); }
+  renderVals(){
+    const tab = this.state.tab;
+    const p = this.props;
+    const active = '#f5a623', activeCoach = '#6ee7b7', dim = '#8e99ae';
+    const done = (v)=>({
+      check: v
+        ? "width:22px;height:22px;border-radius:7px;background:#4fd1c5;display:flex;align-items:center;justify-content:center;color:#0b1220;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer"
+        : "width:22px;height:22px;border-radius:7px;border:2px solid #3a4763;display:flex;align-items:center;justify-content:center;color:transparent;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer",
+      title: v
+        ? "font:600 14px 'Hanken Grotesk';color:#8e99ae;text-decoration:line-through"
+        : "font:600 14px 'Hanken Grotesk';color:#edeff3"
+    });
+    // ---- workout completion ----
+    const R = this.state.results;
+    const isDone = (k)=> !!R[k];
+    const feelColor = { Easy:'#4fd1c5', Solid:'#6ee7b7', Hard:'#f5a623', Brutal:'#ff6b6b' };
+    const doneCheck = (col)=> "width:22px;height:22px;border-radius:7px;background:#4fd1c5;display:flex;align-items:center;justify-content:center;color:#0b1220;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer";
+    const openCheck = (col)=> "width:22px;height:22px;border-radius:7px;border:2px solid "+col+";display:flex;align-items:center;justify-content:center;color:transparent;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer";
+    const titleStyle = (k)=> isDone(k)
+      ? "font:600 14px 'Hanken Grotesk';color:#8e99ae;text-decoration:line-through"
+      : "font:600 14px 'Hanken Grotesk';color:#edeff3";
+    const resultLine = (k)=>{ const r=R[k]; if(!r) return null;
+      return { rpe:'RPE '+r.rpe, feel:r.feel, note:r.note,
+        feelStyle:"font:600 9px 'IBM Plex Mono';letter-spacing:.06em;color:"+(feelColor[r.feel]||'#6ee7b7')+";background:"+(feelColor[r.feel]||'#6ee7b7')+"1f;padding:4px 8px;border-radius:999px",
+        hasNote: !!r.note }; };
+
+    const s = { check:isDone('swim')?doneCheck():openCheck('#3a4763'), title:titleStyle('swim') };
+    const st = { check:isDone('str')?doneCheck():openCheck('#3a4763'), title:titleStyle('str') };
+    const bikeChk = isDone('bike')?doneCheck():openCheck('#f5a623');
+
+    const todayDone = ['swim','bike','str'].filter(isDone);
+    const sessionsDone = 3 + todayDone.length;
+    const todayMin = todayDone.reduce((a,k)=>a+this.SESSIONS[k].min,0);
+    const hoursVal = (4.5 + todayMin/60).toFixed(1);
+    const streakVal = 11 + (todayDone.length>0?0:0);
+    const allDoneToday = todayDone.length===3;
+
+    // completion sheet
+    const csKey = this.state.completeSheet;
+    const csMeta = csKey ? this.SESSIONS[csKey] : null;
+    const rpeChips = [];
+    for(let i=1;i<=10;i++){
+      const on=this.state.draftRpe===i;
+      rpeChips.push({ n:i, style:"cursor:pointer;flex:1;text-align:center;padding:9px 0;border-radius:9px;font:600 12px 'IBM Plex Mono';"+(on?"background:#f5a623;color:#0b1220":"background:#182338;color:#8e99ae;border:1px solid #26324a"),
+        pick:()=>this.setState({ draftRpe:i }) });
+    }
+    const feelOpts = ['Easy','Solid','Hard','Brutal'].map(f=>{
+      const on=this.state.draftFeel===f, col=feelColor[f];
+      return { label:f, style:"cursor:pointer;flex:1;text-align:center;padding:10px 0;border-radius:10px;font:600 12px 'Hanken Grotesk';"+(on?("background:"+col+";color:#0b1220"):("background:#182338;color:#8e99ae;border:1px solid #26324a")),
+        pick:()=>this.setState({ draftFeel:f }) };
+    });
+    const fuelToggleStyle = this.state.draftFuel
+      ? "width:22px;height:22px;border-radius:7px;background:#4fd1c5;display:flex;align-items:center;justify-content:center;color:#0b1220;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer"
+      : "width:22px;height:22px;border-radius:7px;border:2px solid #3a4763;display:flex;align-items:center;justify-content:center;color:transparent;font:700 12px 'Hanken Grotesk';flex:none;cursor:pointer";
+
+    // coach messages -> styled
+    const messages = this.state.messages.map(m=>{
+      if(m.role==='video') return { isVideo:true, title:m.title, url:m.url, open:()=>{ const w=window.open(m.url,'_blank','noopener,noreferrer'); if(!w){ try{ window.top.location.href=m.url; }catch(e){ location.href=m.url; } } } };
+      if(m.role==='user') return {
+        isText:true, text:m.text,
+        wrapStyle:"align-self:flex-end;max-width:80%;animation:msgIn .25s ease-out",
+        bubbleStyle:"background:linear-gradient(135deg,#ff6b6b,#f5a623);border-radius:16px 16px 5px 16px;padding:11px 14px;font:500 13px/1.5 'Hanken Grotesk';color:#0b1220"
+      };
+      return {
+        isText:true, text:m.text,
+        wrapStyle:"align-self:flex-start;max-width:86%;animation:msgIn .25s ease-out",
+        bubbleStyle:"background:#121b2e;border:1px solid #26324a;border-radius:16px 16px 16px 5px;padding:12px 14px;font:400 13px/1.6 'Hanken Grotesk';color:#e2e6ee"
+      };
+    });
+    const chips = Object.keys(this.answers).map(q=>({ q, ask:()=>this.ask(q) }));
+
+    // plan weeks
+    const cur = 6;
+    const pc = { base:'#4fd1c5', build:'#f5a623', peak:'#ff6b6b', taper:'#9f7aea' };
+    const pl = { base:'BASE', build:'BUILD', peak:'PEAK', taper:'TAPER' };
+    const discCol = { Swim:'#4fd1c5', Bike:'#f5a623', Run:'#ff6b6b', Strength:'#9f7aea', Brick:'#f5a623', Race:'#ffd166' };
+    const phaseOf = (n)=> n<=5?'base':n<=13?'build':n<=17?'peak':'taper';
+    const badgeBase = "width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font:700 12px 'IBM Plex Mono';";
+    const openWk = this.state.expandedWeek, openWo = this.state.expandedWorkout;
+    const planWeeks = this.weekMeta.map((focus, i)=>{
+      const n = i+1;
+      const ph = phaseOf(n), col = pc[ph];
+      const done = n<cur, current = n===cur;
+      const open = openWk===n;
+      const pattern = this.sched[this.patternKey(n)];
+      // build days + sessions
+      let totalMin = 0, sessCount = 0;
+      const days = pattern.map((keys, di)=>{
+        const sessions = keys.map((key, si)=>{
+          const wo = this.lib[key];
+          totalMin += wo.dur; sessCount++;
+          const id = n+'-'+di+'-'+si;
+          const meta = key==='race' ? '1.2 · 56 · 13.1 mi'
+            : wo.dur+' min · RPE '+wo.rpe+' · '+wo.zone;
+          const dc = discCol[wo.disc];
+          return {
+            id, title:wo.title, disc:wo.disc, discColor:dc,
+            chipStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.06em;color:"+dc+";background:"+dc+"22;padding:4px 7px;border-radius:999px;flex:none",
+            discLabel:wo.disc.toUpperCase(),
+            meta, summary:wo.summary, target:wo.target, zone:wo.zone,
+            rpeLabel: wo.rpe==null ? 'RACE' : 'RPE '+wo.rpe,
+            blocks:wo.blocks.map(b=>({ k:b.k, d:b.d,
+              kStyle:"font:600 8.5px 'IBM Plex Mono';letter-spacing:.05em;color:"+dc+";background:#182338;padding:4px 7px;border-radius:6px;flex:none;margin-top:1px" })),
+            isOpen: openWo===id,
+            toggle:()=>this.setState(s=>({ expandedWorkout: s.expandedWorkout===id?null:id }))
+          };
+        });
+        return { label:this.days[di], sub: sessions.length? (sessions.length+(sessions.length>1?' sessions':' session')) : 'Rest', isRest: sessions.length===0, sessions };
+      });
+      const hours = (Math.round(totalMin/60*10)/10)+'h';
+      let badgeStyle, badgeText;
+      if(done){ badgeStyle = badgeBase+"background:rgba(255,255,255,.06);color:"+col; badgeText='✓'; }
+      else if(current){ badgeStyle = badgeBase+"background:"+col+";color:#0b1220"; badgeText=String(n); }
+      else { badgeStyle = badgeBase+"background:transparent;border:1.5px solid "+col+"66;color:"+col; badgeText=String(n); }
+      const rowStyle = "background:#121b2e;border:1px solid "+(current?col:'#26324a')+";border-radius:14px;overflow:hidden"+(done?";opacity:.7":"");
+      const tag = "WK "+String(n).padStart(2,'0')+" · "+pl[ph]+(current?" · THIS WEEK":done?" · DONE":"");
+      return { n, focus, hours, sessions:sessCount+' sessions',
+        phaseColor:col, badgeStyle, badgeText, rowStyle, tag, isOpen:open, isCurrent:current, days,
+        toggle:()=>this.setState(s=>({ expandedWeek: s.expandedWeek===n?null:n, expandedWorkout:null })) };
+    });
+
+    // ---- calendar ----
+    const view = this.state.calView, openWoC = this.state.expandedCalWo;
+    const today = new Date(2026,2,12);
+    const month = new Date(2026, 2 + this.state.monthOffset, 1);
+    const y = month.getFullYear(), m = month.getMonth();
+    const monthLabel = month.toLocaleString('en-US',{month:'long',year:'numeric'});
+    const pad = (n)=>String(n).padStart(2,'0');
+    const isoOf = (dt)=> dt.getFullYear()+'-'+pad(dt.getMonth()+1)+'-'+pad(dt.getDate());
+    const rawFor = (dt)=>{
+      const keys = this.sched.build[(dt.getDay()+6)%7];
+      const iso = isoOf(dt);
+      const sched = keys.map((k,i)=>({ type:'lib', key:k, id:'cal-'+iso+'-'+i }));
+      const cust = (this.state.custom[iso]||[]).map((c,i)=>({ type:'cust', c, id:'cust-'+iso+'-'+i }));
+      return sched.concat(cust);
+    };
+    const agendaFor = (iso)=> rawFor(new Date(iso+'T00:00:00')).map(r=>
+      r.type==='lib' ? this.buildSession(r.key, r.id, openWoC) : this.buildCustomSession(r.c, r.id, openWoC));
+    const dotsFor = (dt)=> rawFor(dt).map(r=> r.type==='lib' ? this.DISC[this.lib[r.key].disc] : (this.DISC[r.c.disc]||'#8e99ae')).slice(0,4);
+
+    // month grid
+    const firstDow = month.getDay();
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const cellBase = "aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;position:relative;";
+    const calCells = [];
+    for(let b=0;b<firstDow;b++) calCells.push({ blank:true });
+    for(let dd=1; dd<=daysInMonth; dd++){
+      const date = new Date(y,m,dd), dISO = isoOf(date);
+      const isToday = date.getTime()===today.getTime();
+      const isPast = date < today;
+      const selected = dISO===this.state.selectedDay;
+      let cs = cellBase;
+      if(selected) cs += "background:rgba(245,166,35,.16);border:1.5px solid #f5a623;";
+      else if(isToday) cs += "background:rgba(245,166,35,.10);border:1px solid rgba(245,166,35,.4);";
+      else cs += "background:#101a2c;border:1px solid #1e2a42;";
+      const numStyle = "font:600 12px 'IBM Plex Mono';color:"+(selected||isToday?'#f5a623':isPast?'#5a6580':'#c8cfdb')+";";
+      calCells.push({ blank:false, day:dd, iso:dISO, cellStyle:cs, numStyle, dots:dotsFor(date),
+        select:()=>this.setState({ selectedDay:dISO, expandedCalWo:null }) });
+    }
+
+    // selected-day agenda (month + day views)
+    const sel = this.state.selectedDay;
+    const selD = new Date(sel+'T00:00:00');
+    const calAgendaLabel = selD.toLocaleString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    const calSessions = agendaFor(sel);
+    const calNoSessions = calSessions.length===0;
+
+    // week view (Sun–Sat containing selectedDay)
+    const weekStart = new Date(selD); weekStart.setDate(selD.getDate()-selD.getDay());
+    const calWeekDays = [];
+    for(let i=0;i<7;i++){
+      const dt = new Date(weekStart); dt.setDate(weekStart.getDate()+i);
+      const iso = isoOf(dt);
+      const isToday = dt.getTime()===today.getTime(), selected = iso===sel;
+      calWeekDays.push({
+        label: dt.toLocaleString('en-US',{weekday:'short'}), dateNum: dt.getDate(), iso,
+        headStyle: "display:flex;align-items:baseline;gap:8px;margin:0 2px 7px;cursor:pointer;color:"+(selected||isToday?'#f5a623':'#c8cfdb'),
+        select:()=>this.setState({ selectedDay:iso, expandedCalWo:null }),
+        sessions: agendaFor(iso), noSessions: rawFor(dt).length===0
+      });
+    }
+    const weekLabel = 'Week of '+weekStart.toLocaleString('en-US',{month:'short',day:'numeric'});
+    const calTitle = view==='month' ? monthLabel : view==='week' ? weekLabel : calAgendaLabel;
+    const step = (dir)=>{
+      if(view==='month') return this.setState(s=>({ monthOffset:s.monthOffset+dir }));
+      const d = new Date(this.state.selectedDay+'T00:00:00');
+      d.setDate(d.getDate()+dir*(view==='week'?7:1));
+      this.setState({ selectedDay:isoOf(d), expandedCalWo:null });
+    };
+    const discOptions = ['Swim','Bike','Run','Strength'].map(name=>{
+      const col=this.DISC[name], active=this.state.addDisc===name;
+      return { name, active,
+        style:"cursor:pointer;flex:1;text-align:center;padding:10px 0;border-radius:10px;font:600 12px 'Hanken Grotesk';"+(active?("background:"+col+";color:#0b1220"):("background:#182338;color:#8e99ae;border:1px solid #26324a")),
+        select:()=>this.setState({ addDisc:name }) };
+    });
+
+    // ---- fuel / nutrition ----
+    const mc={carbs:'#f5a623',protein:'#ff6b6b',fluid:'#4fd1c5',sodium:'#9f7aea'};
+    const mu={carbs:'g',protein:'g',fluid:'ml',sodium:'mg'};
+    const mn={carbs:'Carbs',protein:'Protein',fluid:'Fluid',sodium:'Sodium'};
+    const macros=['carbs','protein','fluid','sodium'].map(k=>{
+      const cval=this.state.fuel[k], tval=this.FUELTARGET[k], pct=Math.min(100,Math.round(cval/tval*100));
+      return { key:k, name:mn[k], unit:mu[k], consumed:cval, target:tval, color:mc[k],
+        barStyle:"height:100%;width:"+pct+"%;background:"+mc[k]+";border-radius:6px;transition:width .35s" };
+    });
+    const quickAdds=this.QUICKADD.map(q=>({ label:q.label, sub:q.sub, add:()=>this.addFuel(q.label, q.d) }));
+    const sf=this.state.sessFuel;
+    const chk=(v)=> v
+      ? "width:20px;height:20px;border-radius:6px;background:#4fd1c5;color:#0b1220;display:flex;align-items:center;justify-content:center;font:700 11px 'Hanken Grotesk';flex:none;cursor:pointer"
+      : "width:20px;height:20px;border-radius:6px;border:2px solid #3a4763;color:transparent;display:flex;align-items:center;justify-content:center;font:700 11px 'Hanken Grotesk';flex:none;cursor:pointer";
+    const sessFuelDefs=[{key:'pre',label:'15 min before — 1 gel (25g carb)'},{key:'mid',label:'@ 25 min — start drink-mix bottle'},{key:'late',label:'@ 55 min — 1 gel (25g carb)'},{key:'bottle',label:'Sip ~600 ml/hr throughout'}];
+    const sessFuelItems=sessFuelDefs.map(i=>({ label:i.label, checkStyle:chk(sf[i.key]),
+      toggle:()=>this.setState(s=>({ sessFuel:{...s.sessFuel,[i.key]:!s.sessFuel[i.key]} })) }));
+    const gc=75,gt=90,gb=60; const gpct=Math.round((gc-gb)/(gt-gb)*100);
+    const gut={ currentLabel:gc+' g/hr', targetLabel:'Race target '+gt+' g/hr',
+      barStyle:"height:100%;width:"+gpct+"%;background:linear-gradient(90deg,#4fd1c5,#f5a623);border-radius:6px" };
+
+    // fuel history — grouped by day, newest day first, newest entry first within a day
+    const dcol={carbs:'#f5a623',protein:'#ff6b6b',fluid:'#4fd1c5',sodium:'#9f7aea'};
+    const entryMeta=(d)=>[
+      d.carbs?d.carbs+'g carb':null,
+      d.protein?d.protein+'g protein':null,
+      d.sodium?d.sodium+'mg sodium':null,
+      d.fluid?d.fluid+'ml fluid':null
+    ].filter(Boolean).join(' · ');
+    const fuelDays=Object.keys(this.state.fuelLog).sort().reverse().map(dayKey=>{
+      const dt=new Date(dayKey+'T00:00:00');
+      const isToday=dayKey==='2026-03-12';
+      const dayLabel=isToday?'Today':dt.toLocaleString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      const sum={carbs:0,protein:0,fluid:0,sodium:0};
+      this.state.fuelLog[dayKey].forEach(e=>{ for(const k in e.d) sum[k]+=e.d[k]; });
+      const entries=this.state.fuelLog[dayKey].slice().reverse().map((e,i)=>({
+        name:e.name, time:e.time, meta:entryMeta(e.d),
+        dotColor: e.d.carbs?dcol.carbs:(e.d.protein?dcol.protein:(e.d.fluid?dcol.fluid:dcol.sodium))
+      }));
+      return { dayKey, dayLabel, isToday, count:entries.length,
+        summary:sum.carbs+'g C · '+sum.protein+'g P · '+Math.round(sum.fluid/100)/10+'L · '+sum.sodium+'mg Na',
+        entries };
+    });
+
+    return {
+      isHome: tab==='home',
+      isCoach: tab==='coach',
+      isPlan: tab==='plan',
+      isCalendar: tab==='calendar',
+      isFuel: tab==='log',
+      macros, quickAdds, sessFuelItems, gut, fuelDays,
+      fuelSheet: this.state.fuelSheet,
+      isManualSheet: this.state.fuelSheet==='manual',
+      lastLogged: this.state.lastLogged,
+      openManual:()=>this.openFuelSheet('manual'),
+      closeFuelSheet:()=>this.closeFuelSheet(),
+      submitManualFuel:()=>this.submitManualFuel(),
+      pNameRef:this.pNameRef, pCarbRef:this.pCarbRef, pProteinRef:this.pProteinRef, pSodiumRef:this.pSodiumRef, pFluidRef:this.pFluidRef,
+      planWeeks,
+      calCells, calTitle,
+      calPrev:()=>step(-1), calNext:()=>step(1),
+      calAgendaLabel, calSessions, calNoSessions,
+      calView:view, isMonthView:view==='month', isWeekView:view==='week', isDayView:view==='day', showAgenda:view!=='week',
+      viewLabel:{month:'Month',week:'Week',day:'Day'}[view],
+      viewMenuOpen:this.state.viewMenuOpen,
+      toggleViewMenu:()=>this.setState(s=>({ viewMenuOpen:!s.viewMenuOpen })),
+      setMonthView:()=>this.setState({ calView:'month', viewMenuOpen:false }),
+      setWeekView:()=>this.setState({ calView:'week', viewMenuOpen:false }),
+      setDayView:()=>this.setState({ calView:'day', viewMenuOpen:false }),
+      calWeekDays,
+      addOpen:this.state.addOpen,
+      openAdd:()=>this.setState({ addOpen:true }),
+      closeAdd:()=>this.setState({ addOpen:false }),
+      addTargetLabel:calAgendaLabel, addTitleRef:this.addTitleRef, addDurRef:this.addDurRef,
+      discOptions, submitAdd:()=>this.submitAdd(),
+      goHome:()=>this.setTab('home'),
+      goCoach:()=>this.setTab('coach'),
+      goCalendar:()=>this.setTab('calendar'),
+      goPlan:()=>this.setTab('plan'),
+      goLog:()=>this.setTab('log'),
+      navHome: tab==='home'?active:dim,
+      navCal: tab==='calendar'?active:dim,
+      navPlan: tab==='plan'?active:dim,
+      navLog: tab==='log'?active:dim,
+      navCoach: tab==='coach'?activeCoach:dim,
+      showSeasonProgress: p.showSeasonProgress ?? true,
+      showLoadChart: p.showLoadChart ?? true,
+      showStrengthCard: p.showStrengthCard ?? true,
+      sessionsDone, hoursVal, streakVal, allDoneToday,
+      swimCheckStyle:s.check, swimTitleStyle:s.title, toggleSwim:()=>this.openComplete('swim'),
+      bikeCheckStyle:bikeChk, bikeTitleStyle:titleStyle('bike'), toggleBike:(e)=>{ if(e&&e.stopPropagation)e.stopPropagation(); this.openComplete('bike'); },
+      strCheckStyle:st.check, strTitleStyle:st.title, toggleStr:()=>this.openComplete('str'),
+      swimResult:resultLine('swim'), bikeResult:resultLine('bike'), strResult:resultLine('str'),
+      bikeDone:isDone('bike'),
+      bikeBtnLabel: isDone('bike') ? 'Ride complete ✓' : 'Start ride ▶',
+      startBike:()=>this.openComplete('bike'),
+      completeOpen: !!csKey,
+      csTitle: csMeta?csMeta.title:'', csDisc: csMeta?csMeta.disc:'', csMin: csMeta?csMeta.min:0,
+      rpeChips, feelOpts, draftRpe:this.state.draftRpe,
+      noteRef:this.noteRef, fuelToggleStyle,
+      toggleDraftFuel:()=>this.setState(s=>({ draftFuel:!s.draftFuel })),
+      closeComplete:()=>this.closeComplete(), confirmComplete:()=>this.confirmComplete(),
+      messages, chips,
+      showThinking: this.state.thinking,
+      showChips: !this.state.answered && !this.state.thinking,
+      inputRef:this.inputRef,
+      sendTyped:()=>this.sendTyped(),
+      onInputKey:(e)=>{ if(e.key==='Enter') this.sendTyped(); }
+    };
+  }
+  ask(q){ this.respond(q); }
+  sendTyped(){
+    const el = this.inputRef.current; if(!el) return;
+    const v = (el.value||'').trim(); if(!v) return;
+    el.value='';
+    this.respond(v);
+  }
+  async respond(q){
+    // instant canned answer for the known suggestion chips; live API for anything typed
+    const canned = this.answers[q];
+    this.setState(x=>({ messages:[...x.messages,{role:'user',text:q}], answered:true, thinking:true }));
+    if(canned){
+      setTimeout(()=>this.setState(x=>({ messages:[...x.messages,{role:'coach',text:canned}], thinking:false })), 450);
+      return;
+    }
+    const system = "You are Coach, an encouraging, expert triathlon coach inside a training app. The athlete is Alex, in the BUILD phase (week 6 of 20) training for IRONMAN 70.3 Oceanside, 14 weeks out. Today's key session is 'Threshold Intervals' on the bike: 75 min, 4 x 6 min at threshold (RPE 7) with 3 min easy recovery, 12 min warm-up, 9 min cool-down. Answer the athlete's question directly and warmly in 2-4 short sentences. Be specific and practical. No greeting, no sign-off, no markdown. Whenever the athlete asks to see a video or demonstration, or seems confused about form or technique, call the link_form_video tool with a focused search query (include the discipline, e.g. 'freestyle swim catch technique drill'), then briefly tell them you've linked a demo they can tap.";
+    const tools = [{
+      name: 'link_form_video',
+      description: 'Show the athlete a YouTube video demonstration. Use when they ask for a video/demo or are confused about form or technique.',
+      input_schema: { type:'object', properties:{ title:{type:'string',description:'Short human title for the video card'}, query:{type:'string',description:'YouTube search query'} }, required:['title','query'] },
+      run: async ({title,query})=>{ this.addVideo(title||'Form demonstration', query||title||'triathlon technique'); return 'A tappable video card was shown to the athlete: '+(title||query); }
+    }];
+    try{
+      const text = await window.claude.complete({ system, tools, messages:[{ role:'user', content:q }], max_tokens:500 });
+      this.setState(x=>({ messages:[...x.messages,{role:'coach',text:(text||'').trim()||this.fallback}], thinking:false }));
+    }catch(e){
+      this.setState(x=>({ messages:[...x.messages,{role:'coach',text:this.fallback}], thinking:false }));
+    }
+  }
+  addVideo(title, query){
+    const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
+    this.setState(x=>({ messages:[...x.messages,{ role:'video', title, url }] }));
+  }
+}
+</script>
+</body>
+</html>
