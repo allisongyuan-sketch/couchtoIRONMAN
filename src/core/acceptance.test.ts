@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { importWorkout } from './import/importWorkout';
 import { MockExtractionService } from './extraction/mockService';
 import { compilePlan } from './engine/plan';
-import { createSession, sessionReducer, type SessionEvent } from './engine/session';
+import { createSession, sessionReducer } from './engine/session';
 import { currentStep, remainingSeconds, summarize } from './engine/selectors';
 import { setName, setRepsPerSide } from './editing/operations';
 import { allExercises, prescriptionSummary } from './schema/workout';
@@ -32,11 +32,6 @@ async function importLegDay() {
   );
   if (outcome.status !== 'ok') throw new Error(`import failed: ${outcome.failure.message}`);
   return outcome;
-}
-
-/** Drive the session forward, feeding a monotonically increasing clock. */
-function run(plan: ExecutionPlan, session: WorkoutSession, events: SessionEvent[]): WorkoutSession {
-  return events.reduce((state, event) => sessionReducer(state, plan, event), session);
 }
 
 describe('PRD §41 acceptance: three-round leg day circuit', () => {

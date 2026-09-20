@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { blockKindSchema, type BlockKind } from './workout';
+import { blockKindSchema } from './workout';
 
 /* ================================================================== *
  * Execution plan
@@ -85,8 +85,6 @@ export function stepDurationSeconds(step: Step): number | null {
 export function isTimedStep(step: Step): boolean {
   return stepDurationSeconds(step) !== null;
 }
-
-export type { BlockKind };
 
 /* ================================================================== *
  * Session state

@@ -9,7 +9,7 @@ export interface ParsedSourceUrl {
   contentId?: string;
 }
 
-const HOST_PLATFORMS: Array<{ pattern: RegExp; platform: Platform }> = [
+const HOST_PLATFORMS: { pattern: RegExp; platform: Platform }[] = [
   { pattern: /(^|\.)tiktok\.com$/i, platform: 'tiktok' },
   { pattern: /(^|\.)instagram\.com$/i, platform: 'instagram' },
   { pattern: /(^|\.)instagr\.am$/i, platform: 'instagram' },

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { extractedFieldSchema, type ExtractedField } from './provenance';
+import { extractedFieldSchema } from './provenance';
 import { blockKindSchema, workoutSourceSchema, workoutStructureSchema } from './workout';
 
 /* ================================================================== *
@@ -94,5 +94,3 @@ export const extractionSchema = z.object({
   durationMs: z.number().min(0),
 });
 export type Extraction = z.infer<typeof extractionSchema>;
-
-export type { ExtractedField };
