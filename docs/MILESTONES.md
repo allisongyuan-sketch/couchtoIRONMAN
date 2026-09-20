@@ -10,7 +10,7 @@ Status at time of writing:
 | 1 | Core workout engine | **Done** |
 | 2 | Library, editing, history | **Done** |
 | 3 | Mock import | **Done** |
-| 4 | AI extraction | **Seam built, vendor unwired** |
+| 4 | AI extraction | **Done** (speech is the remaining gap) |
 | 5 | Sharing / ingestion | **Deep link done, native share pending** |
 | 6 | Hardening | **Partly done** |
 
@@ -47,24 +47,53 @@ Import → Review → Edit → Save → Execute, driven by representative struct
   workout
 * All four §31 failure states are reachable and tested
 
-## Milestone 4 — AI extraction 🚧
+## Milestone 4 — AI extraction ✅
 
-**Built:** the abstraction, the guardrail pass, schema validation, the pipeline, and a
-complete `LLMExtractionService` with tests that drive it through a fake `fetch`.
+Real extraction against Claude, end to end.
 
-**Not built:** the media-processing stage that produces a transcript. This is blocked
-on Milestone 5, not on model access — there is no point calling a model until there is
-something to give it.
+* `src/server/anthropicExtractor.ts` — the only file that knows a model exists. Uses
+  the Anthropic SDK with structured outputs (`messages.parse` + `zodOutputFormat`),
+  adaptive thinking, and a cached system prompt.
+* `src/server/extractHandler.ts` + `app/api/extract+api.ts` — the endpoint, so the API
+  key lives on a server and never in the app bundle.
+* `src/core/extraction/remoteExtractionService.ts` — the client side. No prompt, no
+  model name, no credential.
+* `src/core/extraction/videoFrameProcessor.ts` — samples and downscales frames from an
+  uploaded video. This is the real media-processing stage.
 
-To switch on: set a real service in `src/state/container.ts`. Nothing else changes.
+**How it works without speech recognition.** Claude reads the sampled frames, which
+yields two different things with two different provenances: the movement being
+demonstrated (`visual_identification`) and any prescription the creator burned into
+the video (`onscreen_text`). Short-form fitness content puts "3 × 10" on screen
+constantly, so this path alone recovers a great deal — and because on-screen text is
+something the creator *wrote*, those prescriptions pass the guardrails legitimately.
 
-**Needs credentials:** ASR, multimodal extraction. See ARCHITECTURE.md §9.
+**The remaining gap: spoken prescriptions.** Claude has no audio input, so a creator
+who only *says* "three rounds of ten" is not yet captured. That needs an ASR provider
+(Whisper, Deepgram, or similar) feeding `ProcessedMedia.transcript` — the field, the
+prompt handling and the provenance rules for it already exist and are tested. It is an
+additional integration, not a redesign.
+
+**To switch on:** set `ANTHROPIC_API_KEY` where the server runs, and point
+`EXPO_PUBLIC_EXTRACTION_ENDPOINT` at the deployed endpoint. Unset the latter and the
+app returns to mock extraction with no other change. See `.env.example`.
+
+**Verified without a live API call.** No credentials existed in the environment this
+was built in, so the extractor is tested against a stubbed SDK client: request shape,
+every response branch, SDK error → retryability mapping, and — the one that matters —
+that a model ignoring the prompt still cannot get an invented prescription past the
+guardrails. The endpoint itself was smoke-tested against the real built server bundle.
+**It has not yet been run against the live API**; that is the first thing to do with a
+real key.
 
 ## Milestone 5 — Sharing / ingestion 🚧
 
 **Built:** the provider registry, URL parsing and attribution for TikTok, Instagram and
-YouTube, the upload provider, and deep-link import (`repurpose://import?url=…&autostart=1`)
-which the share sheet will hand off to.
+YouTube, deep-link import (`repurpose://import?url=…&autostart=1`) which the share
+sheet will hand off to, and — new — a working **video upload path** via
+`expo-image-picker`, surfaced both on the import screen and on the "we couldn't access
+this video" failure screen. With real extraction configured, upload is the route that
+actually works today.
 
 **Not built:** the native share extension. This needs an iOS Share Extension target and
 an Android `ACTION_SEND` intent filter, which means a config plugin and a development
@@ -91,8 +120,17 @@ anything.
 ## Verification
 
 ```bash
-npm test         # 75 tests, all pure — no simulator needed
+npm test         # 113 tests — no simulator, no credentials, no network
 npm run typecheck
 npm run lint
-npx expo export --platform web   # proves every route bundles
+npx expo export --platform web   # proves every route and the API route bundle
+```
+
+To smoke-test the endpoint against the real built server:
+
+```bash
+npx expo export --platform web --output-dir dist
+npx expo serve --port 8099
+curl -X POST http://localhost:8099/api/extract -H 'content-type: application/json' \
+  -d '{"sourceContentId":"s1","source":{"platform":"upload"},"mediaAnalyzed":true,"frames":[]}'
 ```

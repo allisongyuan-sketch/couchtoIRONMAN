@@ -69,7 +69,12 @@ export const uploadProvider: ContentIngestionProvider = {
     return {
       status: 'ok',
       source: { platform: 'upload', sourceTitle: 'Uploaded video' },
-      media: { mediaUri: input.localFileUri },
+      media: {
+        mediaUri: input.localFileUri,
+        ...(input.durationSeconds !== undefined
+          ? { durationSeconds: input.durationSeconds }
+          : {}),
+      },
     };
   },
 };

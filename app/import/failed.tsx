@@ -5,6 +5,7 @@ import { useImportStore } from '@/state/importStore';
 import { useDraftStore } from '@/state/draftStore';
 import { createEmptyWorkout } from '@/core/editing/operations';
 import { openOriginal } from '@/ui/openOriginal';
+import { pickVideo } from '@/ui/pickVideo';
 
 /**
  * Import failure states (PRD §31).
@@ -18,6 +19,7 @@ export default function ImportFailedScreen() {
   const failure = useImportStore((state) => state.failure);
   const retry = useImportStore((state) => state.retry);
   const reset = useImportStore((state) => state.reset);
+  const start = useImportStore((state) => state.start);
   const loadExisting = useDraftStore((state) => state.loadExisting);
 
   const title = TITLES[failure?.kind ?? 'processing_failed'];
@@ -33,6 +35,21 @@ export default function ImportFailedScreen() {
     await retry();
   }
 
+  async function uploadVideo() {
+    const picked = await pickVideo();
+    if (!picked) return;
+    router.replace('/import/processing');
+    await start(
+      {
+        localFileUri: picked.uri,
+        ...(picked.durationSeconds !== undefined
+          ? { durationSeconds: picked.durationSeconds }
+          : {}),
+      },
+      'upload',
+    );
+  }
+
   return (
     <Screen
       scroll
@@ -41,6 +58,12 @@ export default function ImportFailedScreen() {
           {failure?.retryable ? (
             <Button label="Try again" size="large" onPress={() => void retryImport()} />
           ) : null}
+          <Button
+            label="Upload Video"
+            size={failure?.retryable ? 'regular' : 'large'}
+            variant={failure?.retryable ? 'secondary' : 'primary'}
+            onPress={() => void uploadVideo()}
+          />
           <Button label="Enter workout manually" variant="secondary" onPress={enterManually} />
           <Button
             label="Try another link"

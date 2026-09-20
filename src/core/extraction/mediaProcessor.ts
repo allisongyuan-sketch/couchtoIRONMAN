@@ -27,6 +27,7 @@ export class MockMediaProcessor implements MediaProcessor {
       transcript: [],
       onScreenText: [],
       visualObservations: [],
+      frames: [],
       ...(ingestion.status === 'ok' && ingestion.media.captionText
         ? { captionText: ingestion.media.captionText }
         : {}),

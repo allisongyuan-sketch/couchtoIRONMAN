@@ -6,6 +6,8 @@ import { isSupportedSourceUrl } from '@/core/ingestion/urls';
 import { useImportStore } from '@/state/importStore';
 import { useDraftStore } from '@/state/draftStore';
 import { createEmptyWorkout } from '@/core/editing/operations';
+import { pickVideo } from '@/ui/pickVideo';
+import { usingRealExtraction } from '@/state/container';
 
 /**
  * Import by pasted link (PRD §18).
@@ -43,6 +45,21 @@ export default function ImportScreen() {
     void analyze('share_sheet');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.autostart, supported]);
+
+  async function uploadVideo() {
+    const picked = await pickVideo();
+    if (!picked) return;
+    router.push('/import/processing');
+    await start(
+      {
+        localFileUri: picked.uri,
+        ...(picked.durationSeconds !== undefined
+          ? { durationSeconds: picked.durationSeconds }
+          : {}),
+      },
+      'upload',
+    );
+  }
 
   function enterManually() {
     loadExisting(createEmptyWorkout());
@@ -90,7 +107,14 @@ export default function ImportScreen() {
         <Text variant="label" tone="secondary" uppercase>
           Other ways in
         </Text>
+        <Button label="Upload a video" variant="secondary" onPress={() => void uploadVideo()} />
         <Button label="Enter workout manually" variant="secondary" onPress={enterManually} />
+        {usingRealExtraction ? (
+          <Text variant="small" tone="muted">
+            Platforms rarely let us download a video directly. Saving the video and
+            uploading it here is the most reliable route.
+          </Text>
+        ) : null}
       </View>
     </Screen>
   );

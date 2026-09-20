@@ -38,9 +38,52 @@ sourced from visual identification, and any AI-authored form cue, whatever the m
 returned. The system prompt asks for the same behaviour — both exist because a prompt
 degrades silently and a guardrail does not.
 
-**Evidence it matters:** `llmService.test.ts` drives a deliberately misbehaving vendor
-through the pipeline and asserts the invented sets, reps and cue are all stripped while
-the movement name survives.
+**Evidence it matters:** `anthropicExtractor.test.ts` drives a deliberately misbehaving
+model through the real pipeline — one that claims it counted 3 sets of 10, a 60-second
+rest and 4 rounds, all sourced from watching, plus a coaching cue it wrote itself. Every
+invented number is stripped and the cue is removed; only the movement name survives.
+
+**Where they run:** on the client, inside `runExtractionPipeline` — not on the server.
+That way every extraction is guarded regardless of which service produced it, including
+a future third-party or on-device one.
+
+**The subtle distinction the prompt has to teach:** text burned into a frame is
+something the creator *wrote*, so a prescription read from it is real evidence
+(`onscreen_text`). Counting repetitions by watching a body is not (`visual_identification`).
+Both arrive through the same pixels, and only one of them may set a number.
+
+---
+
+### 3b. Extraction runs on a server, and that is not negotiable
+
+**Why.** An `ANTHROPIC_API_KEY` in a React Native bundle can be pulled out of the
+shipped binary. `EXPO_PUBLIC_` variables are inlined at build time by design, so there
+is no safe way to put a credential in app config, and no obfuscation that changes this.
+A leaked key is someone else's bill and our rate limit.
+
+So the device posts evidence to `/api/extract`, and that endpoint holds the key. The
+client-side service knows a URL and nothing else — no prompt, no model name, no
+credential. A test asserts the outgoing request carries no `authorization` or
+`x-api-key` header, so if anyone moves the model call back onto the client, it fails.
+
+**Cost.** The app needs a deployed backend to do real extraction, which the mock path
+deliberately does not. That is the right trade: shipping a key would be worse.
+
+---
+
+### 3c. The model gets its own wire schema, not the domain schema
+
+**Why.** Three reasons, in increasing order of importance. Structured outputs need a
+closed schema — every field required, `additionalProperties: false`, no defaults — and
+the domain schema is none of those. "Not specified" is much harder for a model to get
+wrong as `value: null` on a field that is always present than as an omitted key. And
+the domain schema should be free to change without renegotiating with a model.
+
+The interesting part is what the wire schema *withholds*. `needsReview` is not in it —
+review status is derived from confidence in one place, so the threshold cannot drift
+per response. Neither is `source: 'user'` — if the model could claim it, a fabricated
+value would render to the user as their own correction. A test asserts the string
+`"user"` never appears in the generated JSON schema.
 
 ---
 
@@ -86,6 +129,25 @@ never destroy what the creator actually prescribed. Second, extraction edit rate
 (PRD §29/§30) is only measurable if the original survives — it is the diff between the
 extraction and the workout. Storing them in one mutable object would quietly delete the
 metric that tells us where extraction is failing.
+
+---
+
+### 7b. Frames, not audio, are how real extraction works today
+
+**Why.** Claude has no audio input, so "wire up real extraction" could have meant
+"integrate an ASR vendor first, then a model". It didn't have to. Sampling eight
+downscaled stills across a clip gets Claude both the movement being demonstrated and
+any prescription the creator burned into the video — and short-form fitness content
+puts its numbers on screen constantly.
+
+That made real extraction shippable without a second vendor integration. Spoken-only
+prescriptions remain uncaptured; `ProcessedMedia.transcript` already exists, is
+prompted for, and has its provenance rules tested, so adding ASR is an integration
+rather than a redesign.
+
+**Cost.** A creator who only speaks their prescription gets a workout with movements
+and no numbers. That is the honest result, it is still usable, and the user can fill
+the numbers in — which is exactly what PRD §8 asks for.
 
 ---
 

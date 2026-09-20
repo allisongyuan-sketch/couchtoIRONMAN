@@ -5,4 +5,6 @@ export * from './pipeline';
 export * from './fixtures';
 export * from './mockService';
 export * from './mediaProcessor';
-export * from './llmService';
+export * from './remoteExtractionService';
+export * from './prompt';
+export * from './wire';

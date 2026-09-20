@@ -31,6 +31,25 @@ export interface VisualObservation {
   confidence?: number;
 }
 
+/**
+ * A still sampled from the video.
+ *
+ * Frames are what make extraction possible without speech recognition: Claude can
+ * both identify the movement being demonstrated AND read the "3 x 10" a creator
+ * burned into the frame. Short-form fitness content puts its prescription on screen
+ * constantly, so this path alone recovers a great deal.
+ *
+ * Note the provenance consequence, which the prompt and the guardrails both enforce:
+ * a number READ from a frame is `onscreen_text` (the creator wrote it), while a
+ * movement INFERRED from a body is `visual_identification` (the creator did not).
+ */
+export interface MediaFrame {
+  atSeconds: number;
+  /** Base64-encoded image data, with no `data:` URI prefix. */
+  base64: string;
+  mediaType: 'image/jpeg' | 'image/png' | 'image/webp';
+}
+
 export interface ProcessedMedia {
   sourceContentId: string;
   source: WorkoutSource;
@@ -40,6 +59,8 @@ export interface ProcessedMedia {
   onScreenText: OnScreenText[];
   captionText?: string;
   visualObservations: VisualObservation[];
+  /** Stills sampled across the video, in chronological order. */
+  frames: MediaFrame[];
   durationSeconds?: number;
 }
 
@@ -90,5 +111,6 @@ export function emptyProcessedMedia(
     transcript: [],
     onScreenText: [],
     visualObservations: [],
+    frames: [],
   };
 }

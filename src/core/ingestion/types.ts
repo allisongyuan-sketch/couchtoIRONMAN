@@ -17,6 +17,11 @@ export interface IngestionInput {
   url?: string;
   /** A local file the user supplied via the upload fallback. */
   localFileUri?: string;
+  /**
+   * Length of that file, when the picker reported it. Lets the frame sampler space
+   * its stills across the real clip instead of probing blind.
+   */
+  durationSeconds?: number;
   /** Free text, for the "Enter Workout Manually" escape hatch. */
   rawText?: string;
 }

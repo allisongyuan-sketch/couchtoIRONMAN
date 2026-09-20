@@ -247,13 +247,54 @@ IngestionResult → ProcessedMedia (transcript + on-screen text + captions + vis
 ```
 
 Implementations:
-* **`MockExtractionService`** — default; deterministic fixtures, including the PRD §41
-  scenario, a no-prescription mobility routine, an ambiguous-reps case, and a failure case.
-  Ships in the product build so the full flow is demoable and testable with zero credentials.
-* **`LLMExtractionService`** — wraps a multimodal vendor behind the same interface, driven
-  by a strict JSON schema. Requires real credentials; selected by config, never by import site.
+* **`MockExtractionService`** — deterministic fixtures, including the PRD §41 scenario, a
+  no-prescription mobility routine, an ambiguous-reps case, and a failure case. Ships in
+  the product build so the full flow is demoable and testable with zero credentials.
+* **`RemoteExtractionService`** — the real one. Posts evidence to our own endpoint and
+  returns the outcome. Contains no prompt, no model name and no credential.
 
-The rest of the app depends only on the interface. Milestone 4 changes one factory line.
+Selection is one ternary in `src/state/container.ts`, driven by whether an endpoint URL
+is configured. No screen, store or test outside that file knows which is running.
+
+### Why extraction runs on a server
+
+**An API key shipped in a React Native bundle is extractable from the app binary.** There
+is no obfuscation that fixes this, and `EXPO_PUBLIC_` variables are inlined into the
+bundle by design — so no credential may ever live in app config. The device therefore
+posts evidence to an endpoint we control, and that endpoint holds the key:
+
+```
+device                          our server                    Anthropic
+  │  POST /api/extract             │                              │
+  │  { frames, transcript, … }     │                              │
+  ├───────────────────────────────►│  messages.parse(...)         │
+  │                                ├─────────────────────────────►│
+  │  { status, result }            │                              │
+  │◄───────────────────────────────┤                              │
+```
+
+`app/api/extract+api.ts` is a two-line binding onto `src/server/extractHandler.ts` —
+everything under `app/` is a route, so the handler lives where it can be imported and
+tested. It is the reference implementation; a team with an existing backend serves the
+same contract from there and points the client's endpoint URL at it.
+
+### What the model is and is not allowed to say
+
+The wire contract (`src/core/extraction/wire.ts`) is deliberately **not** the domain
+schema. It is flat, fully-required and closed, because that is what structured outputs
+need — and because "not specified" is far harder to get wrong as `value: null` on a
+present field than as an omitted key.
+
+Two things are withheld from the model on purpose:
+
+* **`needsReview`** is not in the wire schema. Review status is derived from confidence
+  by `extracted()`, in one place, so the threshold cannot drift per response.
+* **`source: 'user'`** is not in the wire enum. Only an actual human edit may claim it;
+  otherwise a fabricated value could render as the user's own correction.
+
+Guardrails then run on the **client**, inside `runExtractionPipeline`, not on the server.
+That placement is deliberate: it means every extraction is guarded regardless of which
+service produced it, including a future third-party or on-device one.
 
 ---
 
@@ -263,10 +304,11 @@ The rest of the app depends only on the interface. Milestone 4 changes one facto
 |---|---|
 | Workout engine, editor, library, history | **Real.** No external dependency at all. |
 | URL parsing + attribution | **Real.** Pure string work. |
-| Media download from TikTok/IG | **Mocked.** Assume unavailable (U1); graceful fallback is the product behavior. |
+| Media download from TikTok/IG | **Assumed unavailable** (U1). Graceful fallback to upload is the product behavior. |
 | oEmbed / platform metadata | **Deferred.** Needs network + per-platform review. |
-| Transcription (ASR) | **Needs credentials.** Behind `MediaProcessor`. |
-| Multimodal extraction | **Needs credentials.** Behind `WorkoutExtractionService`. |
+| Frame sampling from an uploaded video | **Real.** `VideoFrameMediaProcessor`, on-device. |
+| Multimodal extraction | **Real.** Needs `ANTHROPIC_API_KEY` on the server only. |
+| Transcription (ASR) | **Not built.** Claude has no audio input; needs a separate provider. |
 | Auth (Apple/Google/email) | **Deferred to M6.** Local-first until then (PRD §26 — try first, account later). |
 | Analytics sink | **Console adapter now**, port defined, real sink later. |
 | Entitlements | **Port defined, always-allow adapter.** No paywall (PRD §34). |
