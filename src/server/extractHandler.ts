@@ -52,6 +52,21 @@ const requestSchema = z.object({
     .default([]),
   captionText: z.string().optional(),
   frames: z.array(frameSchema).max(MAX_FRAMES).default([]),
+  /**
+   * Numbers the transcriber was unsure of. Passed through to the model verbatim so
+   * it can mark them unclear instead of committing to one reading (PRD §9).
+   */
+  uncertainQuantities: z
+    .array(
+      z.object({
+        text: z.string(),
+        atSeconds: z.number().min(0),
+        confidence: z.number().min(0).max(1),
+        context: z.string(),
+      }),
+    )
+    .max(64)
+    .default([]),
   durationSeconds: z.number().min(0).optional(),
 });
 

@@ -308,7 +308,7 @@ service produced it, including a future third-party or on-device one.
 | oEmbed / platform metadata | **Deferred.** Needs network + per-platform review. |
 | Frame sampling from an uploaded video | **Real.** `VideoFrameMediaProcessor`, on-device. |
 | Multimodal extraction | **Real.** Needs `ANTHROPIC_API_KEY` on the server only. |
-| Transcription (ASR) | **Not built.** Claude has no audio input; needs a separate provider. |
+| Transcription (ASR) | **Real.** Deepgram; needs `DEEPGRAM_API_KEY` on the server only. Optional — imports degrade to frames without it. |
 | Auth (Apple/Google/email) | **Deferred to M6.** Local-first until then (PRD §26 — try first, account later). |
 | Analytics sink | **Console adapter now**, port defined, real sink later. |
 | Entitlements | **Port defined, always-allow adapter.** No paywall (PRD §34). |

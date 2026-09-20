@@ -144,6 +144,43 @@ describe('extractWorkoutWithClaude', () => {
     expect(content.filter((block) => block.type === 'image')).toHaveLength(5);
   });
 
+  it('sends the transcript and the numbers the transcriber doubted', async () => {
+    // This is the whole path PRD §9 depends on: a shaky number has to survive the
+    // trip from the transcriber to the model, or it silently becomes a fact.
+    const { client, parse } = stubClient({ parsed_output: wire() });
+    await extractWorkoutWithClaude(
+      media({
+        transcript: [
+          { startSeconds: 2, endSeconds: 4, text: 'Twelve reps each side.', confidence: 0.9 },
+        ],
+        uncertainQuantities: [
+          { text: '12', atSeconds: 2, confidence: 0.6, context: '12 reps each side' },
+        ],
+      }),
+      { apiKey: 'k', client },
+    );
+
+    const evidence = JSON.stringify(requestFrom(parse).messages[0]!.content);
+    expect(evidence).toContain('Twelve reps each side.');
+    expect(evidence).toContain('uncertainQuantities');
+    expect(evidence).toContain('12 reps each side');
+  });
+
+  it('will analyze a silent-but-spoken video with no frames at all', async () => {
+    // Audio-only evidence is enough; frames are not a precondition.
+    const { client, parse } = stubClient({ parsed_output: wire() });
+    const outcome = await extractWorkoutWithClaude(
+      media({
+        frames: [],
+        transcript: [{ startSeconds: 0, endSeconds: 3, text: 'Three rounds of ten.' }],
+      }),
+      { apiKey: 'k', client },
+    );
+
+    expect(outcome.status).toBe('ok');
+    expect(parse).toHaveBeenCalledOnce();
+  });
+
   it('never calls the model when there is nothing to analyze', async () => {
     // Asking for a workout with no transcript, text or frames is asking for a
     // hallucination — and paying for it.

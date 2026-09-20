@@ -19,7 +19,9 @@ import type { ProcessedMedia } from './service';
  */
 export const EXTRACTION_SYSTEM_PROMPT = `You convert short-form fitness video into a structured workout that someone can perform without rewatching the video.
 
-You receive whatever evidence could be gathered: a speech transcript, text burned into the video frames, the caption, and sampled frames from the video itself. Any of these may be missing.
+You receive whatever evidence could be gathered: a speech transcript with timings and confidence, text burned into the video frames, the caption, and sampled frames from the video itself. Any of these may be missing.
+
+Where two sources disagree, prefer the one the creator stated most explicitly: speech and on-screen text outrank a caption, and all three outrank anything you infer from watching.
 
 ## What you must return
 
@@ -41,6 +43,8 @@ Every field carries a "source" and a "confidence" alongside its value. Set them 
 
 6. **Say when you are unsure.** If the audio was ambiguous between two numbers, return your best reading with a low confidence rather than a confident guess. Low confidence is how the app knows to ask the user instead of asserting.
 
+   Two things in the evidence tell you when to do this. Each transcript entry carries a "confidence" for the sentence. Separately, "uncertainQuantities" lists individual numbers the transcriber was not sure it heard correctly — a number listed there was a coin flip between two readings, so any value you take from it must carry a confidence below 0.7 even if the surrounding sentence was clear. Do not quietly resolve the ambiguity; the app is built to ask.
+
 7. **Represent the structure.** If exercises are performed back-to-back for several rounds, return ONE block of kind "circuit" with the stated rounds — not several separate exercises that each repeat. Use "straight_sets" only when each exercise is completed for all its sets before moving on. Match the creator's actual organisation.
 
 8. **Distinguish reps from reps-per-side.** "Ten each side" is repsPerSide: 10, not reps: 20.
@@ -51,6 +55,12 @@ If the content is fitness-related but contains no performable workout — a talk
 
 export interface EvidenceBundle {
   transcript: { atSeconds: number; text: string; confidence?: number }[];
+  /**
+   * Individual numbers the transcriber flagged as uncertain. Surfaced separately
+   * because a sentence-level confidence average hides exactly the case PRD §9 cares
+   * about: one shaky number in an otherwise clean sentence.
+   */
+  uncertainQuantities: { heard: string; atSeconds: number; confidence: number; context: string }[];
   onScreenText: { atSeconds: number; text: string }[];
   caption: string | null;
   durationSeconds: number | null;
@@ -73,9 +83,17 @@ export function buildEvidence(media: ProcessedMedia): EvidenceBundle {
         atSeconds: Math.round(segment.startSeconds),
         text: segment.text,
       };
-      if (segment.confidence !== undefined) entry.confidence = segment.confidence;
+      if (segment.confidence !== undefined) {
+        entry.confidence = Number(segment.confidence.toFixed(2));
+      }
       return entry;
     }),
+    uncertainQuantities: media.uncertainQuantities.map((quantity) => ({
+      heard: quantity.text,
+      atSeconds: quantity.atSeconds,
+      confidence: quantity.confidence,
+      context: quantity.context,
+    })),
     onScreenText: media.onScreenText.map((entry) => ({
       atSeconds: Math.round(entry.startSeconds),
       text: entry.text,
@@ -106,7 +124,9 @@ export function hasAnalyzableEvidence(media: ProcessedMedia): boolean {
 /** A short note telling the model which evidence is absent, so silence is not ambiguous. */
 export function describeGaps(media: ProcessedMedia): string {
   const missing: string[] = [];
-  if (media.transcript.length === 0) missing.push('no speech transcript is available');
+  if (media.transcript.length === 0) {
+    missing.push('no speech transcript is available — the video may be silent');
+  }
   if (media.onScreenText.length === 0 && media.frames.length === 0) {
     missing.push('no on-screen text was extracted');
   }

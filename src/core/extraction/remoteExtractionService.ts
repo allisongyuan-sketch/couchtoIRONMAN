@@ -115,6 +115,7 @@ function toRequestBody(media: ProcessedMedia): Record<string, unknown> {
     onScreenText: media.onScreenText,
     ...(media.captionText ? { captionText: media.captionText } : {}),
     frames: media.frames,
+    uncertainQuantities: media.uncertainQuantities,
     ...(media.durationSeconds !== undefined ? { durationSeconds: media.durationSeconds } : {}),
   };
 }

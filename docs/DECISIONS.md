@@ -132,22 +132,58 @@ metric that tells us where extraction is failing.
 
 ---
 
-### 7b. Frames, not audio, are how real extraction works today
+### 7b. Frames and speech are separate evidence paths, and either alone is enough
 
-**Why.** Claude has no audio input, so "wire up real extraction" could have meant
-"integrate an ASR vendor first, then a model". It didn't have to. Sampling eight
-downscaled stills across a clip gets Claude both the movement being demonstrated and
-any prescription the creator burned into the video — and short-form fitness content
-puts its numbers on screen constantly.
+**Why.** Claude has no audio input, so these are genuinely two integrations, not one.
+Frames were built first because they were shippable alone: sampled stills give both
+the movement being demonstrated and any prescription burned into the video, and
+short-form fitness content puts its numbers on screen constantly.
 
-That made real extraction shippable without a second vendor integration. Spoken-only
-prescriptions remain uncaptured; `ProcessedMedia.transcript` already exists, is
-prompted for, and has its provenance rules tested, so adding ASR is an integration
-rather than a redesign.
+Speech closes the other half. A creator who only *says* "three rounds of ten" is now
+captured, and the two paths overlap rather than depend on each other — neither creator
+has to do both. The extraction request carries whatever was gathered, and
+`hasAnalyzableEvidence` accepts a transcript with no frames just as readily as frames
+with no transcript.
 
-**Cost.** A creator who only speaks their prescription gets a workout with movements
-and no numbers. That is the honest result, it is still usable, and the user can fill
-the numbers in — which is exactly what PRD §8 asks for.
+**Cost.** A second vendor, a second key, and a second endpoint.
+
+---
+
+### 7c. Transcription is allowed to fail quietly
+
+**Why.** It is evidence-gathering, not reasoning. If the transcriber is down, the
+right outcome is a workout built from frames — not an error screen. PRD §8 is explicit
+that missing information must never prevent creation of a workout, and a missing
+*source* is just a broader case of that.
+
+So `VideoFrameMediaProcessor` catches everything from the transcription client and
+falls back to `null`. Three paths are tested independently: provider not configured,
+provider errors, and video is silent. The last one is not even a degradation — a
+wordless demonstration is a perfectly normal video.
+
+**Consequence.** Transcription failures are invisible to the user, which is correct
+here but would not be for extraction itself. The asymmetry is deliberate: losing one
+of four evidence sources changes the result's completeness, while losing the model
+means there is no result at all.
+
+---
+
+### 7d. Uncertain numbers are carried separately from the transcript
+
+**Why.** This is the mechanism behind PRD §9, which uses the exact example of "12 reps"
+versus "20 reps". For the app to show "Unclear ⚠️" rather than silently committing to
+one reading, the uncertainty has to survive the trip from the transcriber to the
+extraction model.
+
+A sentence-level confidence score does not survive it. "Rest for sixty seconds between
+rounds" with one shaky word averages out to ~0.9 — the one number that matters
+disappears into the mean. So `findUncertainQuantities` pulls out the individual number
+tokens below threshold, with surrounding context, and those are handed to the model as
+their own field. There is a test built on exactly that sentence.
+
+Two smaller calls inside it: numbers are held to a **stricter** threshold (0.85) than
+prose, because mishearing "Bulgarian" is cosmetic while mishearing "fifteen" changes
+what the user does; and a shaky *non*-number is deliberately ignored.
 
 ---
 

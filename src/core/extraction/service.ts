@@ -1,6 +1,7 @@
 import type { StructuredWorkoutExtraction } from '../schema/extraction';
 import type { WorkoutSource } from '../schema/workout';
 import type { IngestionResult } from '../ingestion/types';
+import type { UncertainQuantity } from '../transcription/uncertainQuantities';
 
 /**
  * What the extraction stage is given, after ingestion and media processing.
@@ -61,6 +62,14 @@ export interface ProcessedMedia {
   visualObservations: VisualObservation[];
   /** Stills sampled across the video, in chronological order. */
   frames: MediaFrame[];
+  /**
+   * Numbers the transcriber was not confident it heard correctly.
+   *
+   * Carried separately from `transcript` on purpose: a single shaky number inside an
+   * otherwise clean sentence vanishes into that sentence's average confidence, and
+   * that number is exactly what PRD §9 is about ("12 reps" or "20 reps"?).
+   */
+  uncertainQuantities: UncertainQuantity[];
   durationSeconds?: number;
 }
 
@@ -112,5 +121,6 @@ export function emptyProcessedMedia(
     onScreenText: [],
     visualObservations: [],
     frames: [],
+    uncertainQuantities: [],
   };
 }

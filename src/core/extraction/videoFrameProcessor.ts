@@ -3,6 +3,11 @@ import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import type { IngestionResult } from '../ingestion/types';
 import type { MediaFrame, MediaProcessor, ProcessedMedia } from './service';
 import { probeTimestamps, sampleTimestamps } from './frameSampling';
+import type { TranscriptionClient } from '../transcription/types';
+import {
+  findUncertainQuantities,
+  toTranscriptSegments,
+} from '../transcription/uncertainQuantities';
 
 /**
  * The real media-processing stage: sample frames from a video the user gave us.
@@ -13,12 +18,19 @@ import { probeTimestamps, sampleTimestamps } from './frameSampling';
  * prescription the creator burned into the video (`onscreen_text`). Short-form
  * fitness content puts "3 × 10" on screen constantly, so this alone recovers a lot.
  *
- * What it does NOT do is transcribe speech. Claude has no audio input, so spoken
- * prescriptions need a separate ASR provider. That gap is documented rather than
- * papered over — see docs/MILESTONES.md.
+ * It also transcribes the speech, when a transcription client is supplied. Spoken
+ * audio is the PRD's highest-priority source (§10), and it is the only one that
+ * carries a prescription the creator never wrote down anywhere.
+ *
+ * Transcription is best-effort by design. A silent video, an unconfigured provider or
+ * a transcriber outage all degrade the import to frames-only rather than failing it —
+ * a workout with movements and no numbers is a usable result (PRD §8), an error
+ * screen is not.
  */
 
 export interface VideoFrameProcessorOptions {
+  /** Omit to skip transcription entirely and run on frames alone. */
+  transcription?: TranscriptionClient;
   maxFrames?: number;
   /**
    * Frames are resized before upload. 768px keeps burned-in text legible — which is
@@ -51,6 +63,7 @@ export class VideoFrameMediaProcessor implements MediaProcessor {
       onScreenText: [],
       visualObservations: [],
       frames: [],
+      uncertainQuantities: [],
     };
 
     if (ingestion.status !== 'ok') {
@@ -68,9 +81,37 @@ export class VideoFrameMediaProcessor implements MediaProcessor {
     const uri = ingestion.media.mediaUri;
     if (!uri) return media;
 
-    media.frames = await this.sampleFrames(uri, ingestion.media.durationSeconds);
-    media.mediaAnalyzed = media.frames.length > 0;
+    // Both stages run against the same file and neither needs the other's output, so
+    // there is no reason to make the user wait for them in sequence.
+    const [frames, transcript] = await Promise.all([
+      this.sampleFrames(uri, ingestion.media.durationSeconds),
+      this.transcribe(uri),
+    ]);
+
+    media.frames = frames;
+    if (transcript) {
+      media.transcript = toTranscriptSegments(transcript.utterances);
+      media.uncertainQuantities = findUncertainQuantities(transcript.utterances);
+    }
+
+    media.mediaAnalyzed = media.frames.length > 0 || media.transcript.length > 0;
     return media;
+  }
+
+  /**
+   * Never throws and never rejects the import. Anything that goes wrong here means
+   * one fewer evidence source, not a failed conversion.
+   */
+  private async transcribe(uri: string) {
+    const client = this.options.transcription;
+    if (!client) return null;
+
+    try {
+      const outcome = await client.transcribeFile({ uri, mediaType: 'video/mp4' });
+      return outcome.status === 'ok' ? outcome.transcript : null;
+    } catch {
+      return null;
+    }
   }
 
   private async sampleFrames(uri: string, durationSeconds?: number): Promise<MediaFrame[]> {

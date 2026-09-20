@@ -4,6 +4,7 @@ import { MockExtractionService } from '@/core/extraction/mockService';
 import { MockMediaProcessor } from '@/core/extraction/mediaProcessor';
 import { RemoteExtractionService } from '@/core/extraction/remoteExtractionService';
 import { VideoFrameMediaProcessor } from '@/core/extraction/videoFrameProcessor';
+import { RemoteTranscriptionClient } from '@/core/transcription/remoteTranscriptionClient';
 import type { ImportDependencies } from '@/core/import/importWorkout';
 
 /**
@@ -27,23 +28,40 @@ export const repositories = createRepositories(asyncStorageKeyValueStore);
  */
 const extractionEndpoint = process.env.EXPO_PUBLIC_EXTRACTION_ENDPOINT?.trim();
 
+/**
+ * Transcription's endpoint, which is independent of extraction's.
+ *
+ * It defaults to `/api/transcribe` alongside the extraction endpoint, since the
+ * reference implementation deploys both together — but it can be pointed elsewhere,
+ * and leaving it unset simply means imports run on frames alone.
+ */
+const transcriptionEndpoint =
+  process.env.EXPO_PUBLIC_TRANSCRIPTION_ENDPOINT?.trim() ??
+  (extractionEndpoint ? extractionEndpoint.replace(/\/extract$/, '/transcribe') : undefined);
+
 export const usingRealExtraction = !!extractionEndpoint;
+export const usingTranscription = !!extractionEndpoint && !!transcriptionEndpoint;
 
 /**
  * Two coherent configurations, not a pile of flags.
  *
- * **Real**: frames are sampled from a video the user supplied and sent to Claude.
- * Content we cannot download is refused honestly — `analyzeMetadataOnlyContent` is
- * false, so a TikTok link we can't fetch lands on "We couldn't access enough of this
- * video" with upload and manual fallbacks, rather than being sent to a model with
- * nothing to look at.
+ * **Real**: the video the user supplied is both transcribed and sampled for frames,
+ * and the combined evidence goes to Claude. Content we cannot download is refused
+ * honestly — `analyzeMetadataOnlyContent` is false, so a TikTok link we can't fetch
+ * lands on "We couldn't access enough of this video" with upload and manual
+ * fallbacks, rather than being sent to a model with nothing to look at.
  *
  * **Mock**: schema-valid fixtures with realistic latency, so the whole flow is
  * demoable and testable with no credentials and no server.
  */
 export const importDependencies: ImportDependencies = extractionEndpoint
   ? {
-      mediaProcessor: new VideoFrameMediaProcessor(),
+      mediaProcessor: new VideoFrameMediaProcessor({
+        // Best-effort: if this is absent or fails, the import runs on frames alone.
+        ...(transcriptionEndpoint
+          ? { transcription: new RemoteTranscriptionClient({ endpoint: transcriptionEndpoint }) }
+          : {}),
+      }),
       extractionService: new RemoteExtractionService({ endpoint: extractionEndpoint }),
       policy: { analyzeMetadataOnlyContent: false },
     }

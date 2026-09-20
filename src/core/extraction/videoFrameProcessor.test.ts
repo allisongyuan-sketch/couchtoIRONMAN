@@ -1,4 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type {
+  TranscriptionClient,
+  TranscriptionOutcome,
+} from '../transcription/types';
 
 /**
  * The native modules are mocked so the sampling logic — which is where the bugs
@@ -14,6 +18,55 @@ vi.mock('expo-image-manipulator', () => ({
 }));
 
 const { VideoFrameMediaProcessor } = await import('./videoFrameProcessor');
+
+/** A transcription client that returns whatever the test wants. */
+function stubTranscription(outcome: TranscriptionOutcome | Error) {
+  const transcribeFile = vi.fn(async () => {
+    if (outcome instanceof Error) throw outcome;
+    return outcome;
+  });
+  return { transcribeFile, client: { id: 'stub', transcribeFile } as TranscriptionClient };
+}
+
+function spokenTranscript(): TranscriptionOutcome {
+  return {
+    status: 'ok',
+    transcript: {
+      text: 'Three rounds. Twelve reps each side.',
+      confidence: 0.9,
+      utterances: [
+        {
+          text: 'Three rounds.',
+          startSeconds: 0,
+          endSeconds: 1.5,
+          confidence: 0.96,
+          words: [
+            { text: '3', startSeconds: 0, endSeconds: 0.4, confidence: 0.97 },
+            { text: 'rounds.', startSeconds: 0.5, endSeconds: 1.5, confidence: 0.95 },
+          ],
+        },
+        {
+          text: 'Twelve reps each side.',
+          startSeconds: 2,
+          endSeconds: 4,
+          confidence: 0.9,
+          words: [
+            { text: '12', startSeconds: 2, endSeconds: 2.5, confidence: 0.6 },
+            { text: 'reps', startSeconds: 2.6, endSeconds: 3, confidence: 0.99 },
+            { text: 'each', startSeconds: 3.1, endSeconds: 3.4, confidence: 0.98 },
+            { text: 'side.', startSeconds: 3.5, endSeconds: 4, confidence: 0.99 },
+          ],
+        },
+      ],
+    },
+  };
+}
+
+const uploadedVideo = {
+  status: 'ok',
+  source: { platform: 'upload' },
+  media: { mediaUri: 'file:///leg-day.mp4', durationSeconds: 30 },
+} as const;
 
 beforeEach(() => {
   getThumbnailAsync.mockReset();
@@ -99,5 +152,117 @@ describe('VideoFrameMediaProcessor', () => {
 
     expect(media.frames).toHaveLength(0);
     expect(media.mediaAnalyzed).toBe(false);
+  });
+});
+
+describe('VideoFrameMediaProcessor with transcription', () => {
+  it('captures spoken prescriptions alongside frames', async () => {
+    // The whole point: a creator who only *says* "three rounds of twelve" now
+    // produces a transcript the extraction model can read.
+    const { client } = stubTranscription(spokenTranscript());
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 2 });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.frames).toHaveLength(2);
+    expect(media.transcript).toHaveLength(2);
+    expect(media.transcript[0]?.text).toBe('Three rounds.');
+    expect(media.transcript[0]?.confidence).toBeCloseTo(0.96);
+  });
+
+  it('flags the one number the transcriber was unsure of', async () => {
+    // PRD §9 end to end: "12" at 0.6 inside a sentence averaging 0.9.
+    const { client } = stubTranscription(spokenTranscript());
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 1 });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.uncertainQuantities).toHaveLength(1);
+    expect(media.uncertainQuantities[0]?.text).toBe('12');
+    expect(media.uncertainQuantities[0]?.context).toContain('reps');
+  });
+
+  it('runs frames and transcription concurrently', async () => {
+    // Sequential would make the user wait for the sum of two network-bound stages.
+    let transcriptionStarted = false;
+    let framesStartedAfterTranscription = false;
+
+    const client: TranscriptionClient = {
+      id: 'stub',
+      transcribeFile: async () => {
+        transcriptionStarted = true;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        return spokenTranscript();
+      },
+    };
+
+    getThumbnailAsync.mockImplementation(async () => {
+      if (transcriptionStarted) framesStartedAfterTranscription = true;
+      return { uri: 'file:///thumb.jpg', width: 1, height: 1 };
+    });
+
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 2 });
+    await processor.process('src_1', uploadedVideo);
+
+    expect(framesStartedAfterTranscription).toBe(true);
+  });
+
+  it('degrades to frames when the transcriber fails', async () => {
+    // A transcription outage must cost evidence, not the whole import.
+    const { client } = stubTranscription({ status: 'failed', reason: 'down', retryable: true });
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 2 });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.transcript).toEqual([]);
+    expect(media.frames).toHaveLength(2);
+    expect(media.mediaAnalyzed).toBe(true);
+  });
+
+  it('degrades to frames when the transcriber throws', async () => {
+    const { client } = stubTranscription(new Error('socket hang up'));
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 2 });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.transcript).toEqual([]);
+    expect(media.frames).toHaveLength(2);
+  });
+
+  it('treats a silent video as normal', async () => {
+    const { client } = stubTranscription({ status: 'no_speech' });
+    const processor = new VideoFrameMediaProcessor({ transcription: client, maxFrames: 2 });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.transcript).toEqual([]);
+    expect(media.uncertainQuantities).toEqual([]);
+    expect(media.mediaAnalyzed).toBe(true);
+  });
+
+  it('does not attempt transcription for metadata-only content', async () => {
+    // There is no file to send.
+    const { client, transcribeFile } = stubTranscription(spokenTranscript());
+    const processor = new VideoFrameMediaProcessor({ transcription: client });
+
+    await processor.process('src_1', {
+      status: 'metadata_only',
+      source: { platform: 'tiktok', caption: 'leg day' },
+      reason: 'TikTok does not expose this video for download.',
+    });
+
+    expect(transcribeFile).not.toHaveBeenCalled();
+  });
+
+  it('counts a transcript alone as analyzable when no frame could be taken', async () => {
+    getThumbnailAsync.mockRejectedValue(new Error('no video track'));
+    const { client } = stubTranscription(spokenTranscript());
+    const processor = new VideoFrameMediaProcessor({ transcription: client });
+
+    const media = await processor.process('src_1', uploadedVideo);
+
+    expect(media.frames).toEqual([]);
+    expect(media.transcript).toHaveLength(2);
+    expect(media.mediaAnalyzed).toBe(true);
   });
 });
