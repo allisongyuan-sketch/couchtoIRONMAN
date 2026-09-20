@@ -5,6 +5,7 @@ import { parseSourceUrl } from '@/core/ingestion/urls';
 import { track } from '@/core/analytics';
 import { entitlements } from '@/core/entitlements';
 import { importDependencies, repositories } from './container';
+import { recordImport, usageThisMonth } from '@/core/entitlements/usage';
 import { useDraftStore } from './draftStore';
 
 /**
@@ -48,7 +49,8 @@ export const useImportStore = create<ImportState>((set, get) => ({
   startedAt: null,
 
   async start(input, entryPoint) {
-    if (!entitlements.canImport(0)) {
+    const usage = await repositories.importUsage.get();
+    if (!entitlements.canImport(usageThisMonth(usage, new Date()))) {
       set({
         status: 'failed',
         input,
@@ -79,6 +81,18 @@ export const useImportStore = create<ImportState>((set, get) => ({
       set({ status: 'failed', failure: outcome.failure });
       return;
     }
+
+    // Charge the allowance only for an import that actually produced a workout.
+    // Burning someone's monthly quota on a video we failed to read would be
+    // indefensible, and it is easy to get wrong by counting at the top of this
+    // function instead of here.
+    //
+    // Re-read rather than incrementing the count captured above: an import takes
+    // tens of seconds, and a share arriving mid-import would otherwise overwrite
+    // that increment with a stale one.
+    await repositories.importUsage.set(
+      recordImport(await repositories.importUsage.get(), new Date()),
+    );
 
     // Retain the extraction separately from the workout, so later edits never
     // overwrite what the AI actually produced.

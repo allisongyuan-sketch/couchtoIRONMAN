@@ -7,6 +7,8 @@ import {
 } from '@/core/schema/workout';
 import { extractionSchema, type Extraction } from '@/core/schema/extraction';
 import { workoutSessionSchema, type SessionSummary, type WorkoutSession } from '@/core/schema/session';
+import type { ImportUsage } from '@/core/entitlements/usage';
+import { createId } from '@/core/util/id';
 import type { KeyValueStore } from './keyValueStore';
 
 /**
@@ -29,6 +31,9 @@ const KEYS = {
   activeSession: 'repurpose:session:active:v1',
   history: 'repurpose:history:v1',
   onboarded: 'repurpose:onboarded:v1',
+  importUsage: 'repurpose:import-usage:v1',
+  analyticsQueue: 'repurpose:analytics:queue:v1',
+  deviceId: 'repurpose:device-id:v1',
 } as const;
 
 async function readCollection<T>(
@@ -219,12 +224,91 @@ export function createPreferencesRepository(store: KeyValueStore): PreferencesRe
   };
 }
 
+/* ------------------------------- import usage ------------------------------ */
+
+const importUsageSchema = z.object({
+  month: z.string(),
+  count: z.number().int().min(0),
+});
+
+export interface ImportUsageRepository {
+  get(): Promise<ImportUsage | null>;
+  set(usage: ImportUsage): Promise<void>;
+}
+
+/**
+ * How many AI imports have been used this month (PRD §34).
+ *
+ * Stored locally alongside everything else, because the allowance has to be
+ * enforceable before anyone has an account.
+ */
+export function createImportUsageRepository(store: KeyValueStore): ImportUsageRepository {
+  return {
+    async get() {
+      const raw = await store.getItem(KEYS.importUsage);
+      if (!raw) return null;
+      try {
+        const parsed = importUsageSchema.safeParse(JSON.parse(raw));
+        return parsed.success ? parsed.data : null;
+      } catch {
+        return null;
+      }
+    },
+    async set(usage) {
+      await store.setItem(KEYS.importUsage, JSON.stringify(usage));
+    },
+  };
+}
+
+/* ------------------------------ analytics queue ---------------------------- */
+
+export interface AnalyticsQueueRepository {
+  load(): Promise<unknown[]>;
+  save(events: unknown[]): Promise<void>;
+  /** A stable anonymous id for this install. Created on first use. */
+  deviceId(): Promise<string>;
+}
+
+/**
+ * Events waiting to be delivered, and the anonymous id they are attributed to.
+ *
+ * Persisted so that a funnel is not silently truncated by an app restart or a
+ * commute through a tunnel — which is precisely when a drop-off would otherwise look
+ * like a product problem rather than a delivery one.
+ */
+export function createAnalyticsQueueRepository(store: KeyValueStore): AnalyticsQueueRepository {
+  return {
+    async load() {
+      const raw = await store.getItem(KEYS.analyticsQueue);
+      if (!raw) return [];
+      try {
+        const parsed: unknown = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    },
+    async save(events) {
+      await store.setItem(KEYS.analyticsQueue, JSON.stringify(events));
+    },
+    async deviceId() {
+      const existing = await store.getItem(KEYS.deviceId);
+      if (existing) return existing;
+      const created = createId('dev');
+      await store.setItem(KEYS.deviceId, created);
+      return created;
+    },
+  };
+}
+
 export interface Repositories {
   workouts: WorkoutRepository;
   exercises: ExerciseCatalogRepository;
   extractions: ExtractionRepository;
   sessions: SessionRepository;
   preferences: PreferencesRepository;
+  importUsage: ImportUsageRepository;
+  analyticsQueue: AnalyticsQueueRepository;
 }
 
 export function createRepositories(store: KeyValueStore): Repositories {
@@ -234,5 +318,7 @@ export function createRepositories(store: KeyValueStore): Repositories {
     extractions: createExtractionRepository(store),
     sessions: createSessionRepository(store),
     preferences: createPreferencesRepository(store),
+    importUsage: createImportUsageRepository(store),
+    analyticsQueue: createAnalyticsQueueRepository(store),
   };
 }

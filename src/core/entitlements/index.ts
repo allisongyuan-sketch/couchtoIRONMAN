@@ -10,6 +10,8 @@
  * the workout player are never gated.
  */
 
+export * from './usage';
+
 export type Plan = 'free' | 'pro';
 
 export interface Entitlements {
@@ -27,20 +29,33 @@ export interface EntitlementService {
 }
 
 /**
- * The MVP adapter: everything is allowed.
+ * The MVP adapter.
  *
- * The free tier's limit is deliberately null today. Per PRD §34 we do not gate
- * before repeated import → workout behaviour has been validated; flipping this to a
- * number is the entire change required to introduce one.
+ * The free tier's limit is deliberately null, so nothing is gated today: per PRD §34
+ * we do not put a paywall in front of behaviour we have not validated yet.
+ *
+ * What is *not* stubbed is the counting. `canImport` receives a real number of
+ * imports used this month, so introducing a limit is a one-line change to
+ * `FREE_ENTITLEMENTS` rather than a feature to build under time pressure — and the
+ * usage data needed to choose that number is already being collected.
  */
-export class AlwaysAllowEntitlements implements EntitlementService {
+export class PlanEntitlements implements EntitlementService {
+  constructor(private readonly plan: Entitlements = FREE_ENTITLEMENTS) {}
+
   current(): Entitlements {
-    return FREE_ENTITLEMENTS;
+    return this.plan;
   }
+
   canImport(importsThisMonth: number): boolean {
     const limit = this.current().monthlyAiImportLimit;
     return limit === null || importsThisMonth < limit;
   }
+
+  /** How many are left, or null when unlimited. Drives what the UI can say. */
+  remaining(importsThisMonth: number): number | null {
+    const limit = this.current().monthlyAiImportLimit;
+    return limit === null ? null : Math.max(0, limit - importsThisMonth);
+  }
 }
 
-export const entitlements: EntitlementService = new AlwaysAllowEntitlements();
+export const entitlements = new PlanEntitlements();

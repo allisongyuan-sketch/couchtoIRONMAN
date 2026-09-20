@@ -207,6 +207,49 @@ payload shape is a test instead of something to discover on a device.
 
 ---
 
+### 7f. Analytics batches, persists, and never touches the product
+
+**Why.** The naive tracker — one HTTP request per event, fired where it happens — is
+wrong on mobile in three ways, and every one of them surfaces as a *wrong number*
+rather than as an error, which is what makes them worth engineering around:
+
+* A request per event is slow and wasteful, and our events cluster
+  (`import_started` then `import_succeeded` seconds apart). So they batch.
+* People lose signal mid-workout, which is exactly when the most important events
+  fire. A dropped `workout_completed` reads as a user abandoning a workout. So the
+  queue is persisted and survives restarts and offline stretches.
+* Analytics must never block or break the product, so `track()` is fire-and-forget
+  and every failure path ends in "keep the events and try later".
+
+Two details worth keeping. The queue is **capped**, because unbounded growth on
+someone's phone is its own bug — and it drops from the front, since recent events beat
+stale ones. And a `4xx` **drops** the batch rather than retrying: a malformed batch or
+a bad key fails identically forever, and retrying it would block every later event
+behind something that can never succeed.
+
+**A bug the tests caught:** `track()` originally stamped the timestamp after an
+`await`, so on a busy event loop it recorded when the queue got round to the event
+rather than when it happened. It now reads the clock synchronously at the call site.
+
+---
+
+### 7g. Events go to a product analytics tool, not our own database
+
+**Why.** We already run Supabase, so writing events to a table looks like the
+lower-dependency choice. It isn't, for one decisive reason: **the funnel happens
+before anyone signs in.** PRD §30's headline metric is import → workout start, and
+most of that occurs on a first run with no account.
+
+Collecting it in Postgres would mean an anonymous-insert policy on a table — a
+standing unauthenticated write endpoint — to gather data a product analytics tool
+handles with a write-only key and an anonymous distinct id. Same data, much worse
+security posture, plus the funnel analysis to build by hand afterwards.
+
+Events carry a per-install anonymous id and no email, URL or user id; a test asserts
+nothing matching those patterns leaves the device.
+
+---
+
 ### 8. Mock services ship in the product build
 
 **Why.** `MockExtractionService` returns schema-valid fixtures with realistic latency.
@@ -221,6 +264,29 @@ against the real schema, so a drifting fixture fails exactly like a bad vendor w
 **Why.** The pipeline cannot honestly report progress, and PRD §5 says not to imply
 precision the system does not have. Rotating honest descriptions with an indeterminate
 spinner is the truthful version of a progress screen.
+
+---
+
+### 9b. Entitlements count for real, even though nothing is gated
+
+**Why.** The check was previously `canImport(0)` — a hardcoded zero, so a limit could
+never have fired even if one were set. That is the worst kind of stub: it looks
+finished, it type-checks, and it silently does nothing.
+
+The limit is still `null`, because PRD §34 is explicit about not gating behaviour we
+have not validated. But the *counting* is real now, which means introducing a limit is
+a one-line change to `FREE_ENTITLEMENTS` rather than a feature to build under time
+pressure — and the usage data needed to choose a sensible number is already being
+collected.
+
+Three decisions inside it. Usage buckets by **UTC** month, so the allowance resets at
+the same instant for everyone and crossing a date line cannot roll it backwards. A
+failed import **does not** charge the allowance — burning someone's quota on a video
+we could not read would be indefensible, and counting at the top of the function
+instead of after success is exactly how that bug gets written. And the increment
+**re-reads** the stored count rather than incrementing the one read before the import
+began: an import takes tens of seconds, and a share arriving mid-import would
+otherwise overwrite it with a stale value.
 
 ---
 

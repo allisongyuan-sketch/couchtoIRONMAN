@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +11,7 @@ import { colors } from '@/ui/theme';
 import { useSessionStore } from '@/state/sessionStore';
 import { useLibraryStore } from '@/state/libraryStore';
 import { useShareHandoff } from '@/state/useShareHandoff';
+import { flushAnalytics } from '@/core/analytics';
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -37,6 +39,15 @@ export default function RootLayout() {
       await SplashScreen.hideAsync();
     }
     void bootstrap();
+  }, []);
+
+  // Backgrounding is the last reliable moment to deliver events on mobile. Without
+  // this, the tail of every session is lost — and the tail is where completions are.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') void flushAnalytics();
+    });
+    return () => subscription.remove();
   }, []);
 
   if (!ready) return null;

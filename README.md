@@ -78,7 +78,7 @@ wins and the link is kept for attribution.
 ## Verifying it
 
 ```bash
-npm test           # 201 tests — no simulator, no credentials, no network
+npm test           # 234 tests — no simulator, no credentials, no network
 npm run typecheck
 npm run lint
 npx expo export --platform web    # proves every route and both API routes bundle
@@ -102,6 +102,7 @@ src/core/     Pure domain. No RN, no network. Where the product's rules live.
   transcription/ ASR port, uncertain-quantity detection, device-side client
   auth/         account port
   sync/         merge policy and local↔remote reconciliation
+  analytics/    event taxonomy, batching persisted transport, HTTP sink
   editing/      pure workout mutations that preserve creator values
 src/server/   Server-only. The Claude call, the Deepgram call, and their endpoint
               handlers — never bundled into the app, because the keys live here.

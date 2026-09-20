@@ -115,6 +115,43 @@ describe('repositories', () => {
     expect((await sessions.listHistory()).map((s) => s.completedAt)).toEqual([200, 100]);
   });
 
+  it('persists monthly import usage', async () => {
+    const { importUsage } = repos();
+    expect(await importUsage.get()).toBeNull();
+
+    await importUsage.set({ month: '2026-01', count: 2 });
+    expect(await importUsage.get()).toEqual({ month: '2026-01', count: 2 });
+  });
+
+  it('treats corrupt usage as no usage rather than blocking imports', async () => {
+    // Failing open matters here: a bad record must not lock someone out of the
+    // feature they may be paying for.
+    const store = new MemoryKeyValueStore();
+    await store.setItem('repurpose:import-usage:v1', 'not json');
+    expect(await createRepositories(store).importUsage.get()).toBeNull();
+  });
+
+  it('keeps a stable anonymous device id across calls', async () => {
+    const { analyticsQueue } = repos();
+    const first = await analyticsQueue.deviceId();
+    const second = await analyticsQueue.deviceId();
+
+    expect(first).toBe(second);
+    expect(first).toMatch(/^dev_/);
+  });
+
+  it('round-trips the analytics queue and tolerates corruption', async () => {
+    const { analyticsQueue } = repos();
+    expect(await analyticsQueue.load()).toEqual([]);
+
+    await analyticsQueue.save([{ name: 'import_started', at: 1 }]);
+    expect(await analyticsQueue.load()).toHaveLength(1);
+
+    const store = new MemoryKeyValueStore();
+    await store.setItem('repurpose:analytics:queue:v1', '{not an array}');
+    expect(await createRepositories(store).analyticsQueue.load()).toEqual([]);
+  });
+
   it('remembers that onboarding is done', async () => {
     const { preferences } = repos();
     expect(await preferences.hasOnboarded()).toBe(false);

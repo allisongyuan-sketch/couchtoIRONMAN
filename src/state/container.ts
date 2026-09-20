@@ -14,6 +14,7 @@ import {
   createRemoteWorkoutStore,
 } from '@/data/supabase/remoteStores';
 import type { RemoteHistoryStore, RemoteWorkoutStore } from '@/core/sync/types';
+import { BatchingTracker, ConsoleTracker, HttpAnalyticsSink, setTracker } from '@/core/analytics';
 
 /**
  * Composition root.
@@ -107,3 +108,27 @@ export const remoteStores: {
   : { workouts: null, history: null };
 
 export const accountsAvailable = !!supabase;
+
+
+/* ------------------------------------------------------------------ *
+ * Analytics
+ *
+ * With a collector configured, events are batched and persisted before delivery;
+ * without one, they go to the console in development and nowhere in production.
+ * Either way `track()` is fire-and-forget at every call site — analytics is never
+ * allowed to block or break the product.
+ * ------------------------------------------------------------------ */
+
+const analyticsEndpoint = process.env.EXPO_PUBLIC_ANALYTICS_ENDPOINT?.trim();
+const analyticsKey = process.env.EXPO_PUBLIC_ANALYTICS_KEY?.trim();
+
+export const analyticsEnabled = !!analyticsEndpoint && !!analyticsKey;
+
+setTracker(
+  analyticsEndpoint && analyticsKey
+    ? new BatchingTracker({
+        sink: new HttpAnalyticsSink({ endpoint: analyticsEndpoint, apiKey: analyticsKey }),
+        store: repositories.analyticsQueue,
+      })
+    : new ConsoleTracker(),
+);
