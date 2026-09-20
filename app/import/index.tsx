@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, Card, Screen, Text, colors, radius, spacing } from '@/ui';
 import { isSupportedSourceUrl } from '@/core/ingestion/urls';
 import { useImportStore } from '@/state/importStore';
@@ -16,18 +16,33 @@ import { createEmptyWorkout } from '@/core/editing/operations';
  */
 export default function ImportScreen() {
   const router = useRouter();
-  const [url, setUrl] = useState('');
+  // A shared or deep-linked URL arrives as a route param: repurpose://import?url=…
+  // The screen treats it exactly like a paste, so the share sheet does not need its
+  // own flow — only its own native plumbing (see docs/MILESTONES.md, Milestone 5).
+  const params = useLocalSearchParams<{ url?: string; autostart?: string }>();
+  const [url, setUrl] = useState(params.url ?? '');
   const start = useImportStore((state) => state.start);
   const loadExisting = useDraftStore((state) => state.loadExisting);
+  const autoStarted = useRef(false);
 
   const trimmed = url.trim();
   const supported = trimmed.length > 0 && isSupportedSourceUrl(trimmed);
   const showUnsupported = trimmed.length > 8 && !supported;
 
-  async function analyze() {
+  async function analyze(entryPoint: 'paste_link' | 'share_sheet' = 'paste_link') {
     router.push('/import/processing');
-    await start({ url: trimmed }, 'paste_link');
+    await start({ url: trimmed }, entryPoint);
   }
+
+  // A shared link should not make the user tap Analyze again — that is the whole
+  // point of sharing to Repurpose (PRD §18).
+  useEffect(() => {
+    if (autoStarted.current) return;
+    if (params.autostart !== '1' || !supported) return;
+    autoStarted.current = true;
+    void analyze('share_sheet');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.autostart, supported]);
 
   function enterManually() {
     loadExisting(createEmptyWorkout());
