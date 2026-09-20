@@ -142,6 +142,7 @@ first-class outcome with an upload and manual-entry path — not an error state 
 | [SCHEMA.md](docs/SCHEMA.md) | The structured workout and extraction schema |
 | [DECISIONS.md](docs/DECISIONS.md) | The non-obvious calls, and what they cost |
 | [MILESTONES.md](docs/MILESTONES.md) | Status against the PRD's milestones |
+| [SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md) | Turning on accounts and sync |
 
 ## Status
 

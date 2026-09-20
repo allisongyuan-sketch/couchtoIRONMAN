@@ -177,10 +177,23 @@ what makes adding that projection safe later. See `supabase/migrations/0002_sync
 it was before accounts existed, and the Profile screen says so rather than implying a
 backup that does not exist.
 
-**Not verified against a live Supabase project** — no credentials in this
-environment. The auth service and both document stores are tested against stubbed
-clients, and the merge and sync logic are tested end to end against in-memory
-repositories, including the round trip that preserves provenance.
+**The schema and its RLS policies are now verified for real.** `supabase/test/verify.sh`
+applies both migrations to an actual Postgres, asserts RLS is enabled on every table
+holding user data, then acts as two signed-in users and a signed-out one to prove none
+can reach another's rows — including that a row cannot be forged into someone else's
+account. It runs as the `schema` CI job on every push, and it exits non-zero when it
+should: confirmed by sabotaging a policy and watching it fail.
+
+That matters because the anon key ships inside the app bundle. It is safe *only*
+because those policies hold, which makes the claim worth checking rather than
+asserting.
+
+**Still not verified against a hosted Supabase project** — the environment this was
+built in has no Supabase credentials and its egress proxy blocks `supabase.com`
+outright, so a hosted project is unreachable from here regardless. The auth service
+and both document stores are tested against stubbed clients, and merge and sync are
+tested end to end against in-memory repositories including a round trip that preserves
+provenance. Setup is a short checklist: `docs/SUPABASE_SETUP.md`.
 
 ---
 

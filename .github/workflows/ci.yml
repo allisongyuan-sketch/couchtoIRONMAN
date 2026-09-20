@@ -46,3 +46,41 @@ jobs:
       # the share extension. A plugin that fails to apply shows up here.
       - name: Check native config resolves
         run: npx expo config --type introspect > /dev/null
+
+  # The anon key ships inside the app bundle, and is safe only because Row Level
+  # Security scopes every row to auth.uid(). That is a security claim, so it gets
+  # checked on every push rather than trusted.
+  schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install psql
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      # Applies both migrations, asserts RLS is on for every table holding user
+      # data, then acts as two signed-in users and a signed-out one to prove the
+      # isolation. Exits non-zero on any failure — verified against a sabotaged
+      # policy, so it can actually fail.
+      - name: Verify schema and RLS policies
+        run: ./supabase/test/verify.sh
