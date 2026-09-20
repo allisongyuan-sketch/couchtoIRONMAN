@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same branch makes the older run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # The whole suite runs in Node with no simulator, no credentials and no
+      # network — which is the point of keeping the domain logic free of React
+      # Native imports.
+      - name: Test
+        run: npm test
+
+      # Typechecking cannot catch a broken route or an unresolvable import in the
+      # bundler graph. Exporting can, and it also proves both API routes still build.
+      - name: Build web bundle and API routes
+        run: npx expo export --platform web --output-dir dist
+
+      # Config lives in app.config.ts and runs the native config plugins, including
+      # the share extension. A plugin that fails to apply shows up here.
+      - name: Check native config resolves
+        run: npx expo config --type introspect > /dev/null
