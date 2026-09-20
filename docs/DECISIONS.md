@@ -187,6 +187,26 @@ what the user does; and a shaky *non*-number is deliberately ignored.
 
 ---
 
+### 7e. A shared file beats a shared link
+
+**Why.** U1 — that platforms will not let us download a Reel or a TikTok — is the
+product's biggest risk, and the share sheet partly routes around it. When a user
+shares from their own gallery, or from an app that attaches the media, the payload
+carries the **video file**. That is media we could never have fetched ourselves, and
+it feeds the full pipeline: transcription, frames, the lot.
+
+So when a share carries both a file and a URL, the file wins and the URL is kept for
+attribution. A link is a request to go and get something we probably cannot get; a
+file is the thing itself.
+
+**The messy part is everything else.** iOS usually sends a clean `webUrl`; Android
+usually sends a sentence with the link inside it, and often several links at once — a
+tracking redirect, the creator's profile, and the video. `resolveSharedContent` picks
+the *supported* one rather than the first one, and all of it is pure, so each real
+payload shape is a test instead of something to discover on a device.
+
+---
+
 ### 8. Mock services ship in the product build
 
 **Why.** `MockExtractionService` returns schema-valid fixtures with realistic latency.

@@ -5,9 +5,11 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import { ShareIntentProvider } from 'expo-share-intent';
 import { colors } from '@/ui/theme';
 import { useSessionStore } from '@/state/sessionStore';
 import { useLibraryStore } from '@/state/libraryStore';
+import { useShareHandoff } from '@/state/useShareHandoff';
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -40,27 +42,41 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.background },
-              animation: 'slide_from_right',
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
-            <Stack.Screen name="session/active" options={{ gestureEnabled: false }} />
-            <Stack.Screen
-              name="session/complete"
-              options={{ gestureEnabled: false, animation: 'fade' }}
-            />
-          </Stack>
-        </QueryClientProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    // Wraps everything so a share can be picked up no matter which screen the app
+    // happens to open on.
+    <ShareIntentProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <QueryClientProvider client={queryClient}>
+            <StatusBar style="light" />
+            <ShareHandoff />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.background },
+                animation: 'slide_from_right',
+              }}
+            >
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
+              <Stack.Screen name="session/active" options={{ gestureEnabled: false }} />
+              <Stack.Screen
+                name="session/complete"
+                options={{ gestureEnabled: false, animation: 'fade' }}
+              />
+            </Stack>
+          </QueryClientProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ShareIntentProvider>
   );
+}
+
+/**
+ * Lives inside the provider and the router, which is the only place the share
+ * handoff hook can run. Renders nothing.
+ */
+function ShareHandoff() {
+  useShareHandoff();
+  return null;
 }

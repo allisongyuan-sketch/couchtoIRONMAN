@@ -22,6 +22,10 @@ npm install
 npm start          # then open in Expo Go, or press w for web
 ```
 
+Expo Go runs everything except the share sheet, which is native code and needs a
+development build (`npx expo prebuild` and a real build). Paste-a-link and upload both
+work in Expo Go.
+
 No credentials, API keys or backend are required. Extraction runs on a mock service
 that returns schema-valid fixtures, so the entire flow — import, review, edit, save,
 train, complete — works out of the box.
@@ -65,14 +69,16 @@ failing. A workout with movements and no numbers is a usable result; an error sc
 is not.
 
 **Where video comes from.** Platforms generally won't let anyone download a Reel or a
-TikTok, so with real extraction configured, a link we can't fetch lands on "We couldn't
-access enough of this video" with an upload fallback — and upload is the path that
-actually works. This is the architecture assuming its own worst case, as designed.
+TikTok, so a link we can't fetch lands on "We couldn't access enough of this video"
+with an upload fallback. Two paths get us real media anyway: the user uploads it, or —
+better — the share sheet hands over the video file itself, which is media we could
+never have fetched on our own. When a share carries both a file and a link, the file
+wins and the link is kept for attribution.
 
 ## Verifying it
 
 ```bash
-npm test           # 158 tests — no simulator, no credentials, no network
+npm test           # 171 tests — no simulator, no credentials, no network
 npm run typecheck
 npm run lint
 npx expo export --platform web    # proves every route and both API routes bundle
@@ -90,7 +96,8 @@ app/          Expo Router screens. Thin — they compose, they do not decide.
 src/core/     Pure domain. No RN, no network. Where the product's rules live.
   schema/       provenance + block-structured workouts + execution plan
   engine/       plan compiler and the session state machine
-  ingestion/    pluggable content providers (never assumes media is downloadable)
+  ingestion/    pluggable providers + share-payload resolution (never assumes
+                media is downloadable)
   extraction/   AI abstraction, guardrails, wire contract, frame sampling, fixtures
   transcription/ ASR port, uncertain-quantity detection, device-side client
   editing/      pure workout mutations that preserve creator values
@@ -144,9 +151,10 @@ It has been verified against stubbed vendor clients and the built server bundle,
 **not yet against either live API** — no credentials existed in the environment it was
 built in. That is the first thing to do with real keys.
 
-Milestone 5's upload and deep-link paths work; the native share extension is pending a
-development build. Milestone 6 is complete apart from authentication, which is last on
-purpose — a user should reach their first converted workout before anyone asks them to
-register.
+Milestone 5 is complete: share sheet, deep link and upload all route into the same
+import flow. The share extension's native config was verified by introspection rather
+than on a device, which needs a real build. Milestone 6 is complete apart from
+authentication, which is last on purpose — a user should reach their first converted
+workout before anyone asks them to register.
 
 Details, including what is blocked on what, are in [MILESTONES.md](docs/MILESTONES.md).

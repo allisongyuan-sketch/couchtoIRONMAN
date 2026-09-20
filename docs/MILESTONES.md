@@ -11,7 +11,7 @@ Status at time of writing:
 | 2 | Library, editing, history | **Done** |
 | 3 | Mock import | **Done** |
 | 4 | AI extraction | **Done** — speech, on-screen text and vision |
-| 5 | Sharing / ingestion | **Deep link done, native share pending** |
+| 5 | Sharing / ingestion | **Done** |
 | 6 | Hardening | **Partly done** |
 
 ---
@@ -107,7 +107,7 @@ real keys. The specific things to confirm there are the Deepgram response shape 
 `utterances=true` (the parser falls back to the channel alternative if it differs) and
 end-to-end extraction quality on real short-form video.
 
-## Milestone 5 — Sharing / ingestion 🚧
+## Milestone 5 — Sharing / ingestion ✅
 
 **Built:** the provider registry, URL parsing and attribution for TikTok, Instagram and
 YouTube, deep-link import (`repurpose://import?url=…&autostart=1`) which the share
@@ -116,14 +116,33 @@ sheet will hand off to, and — new — a working **video upload path** via
 this video" failure screen. With real extraction configured, upload is the route that
 actually works today.
 
-**Not built:** the native share extension. This needs an iOS Share Extension target and
-an Android `ACTION_SEND` intent filter, which means a config plugin and a development
-build — Expo Go cannot host it. The app-side flow is already in place, so this is
-native plumbing rather than product work.
+**Share sheet.** `expo-share-intent` supplies the iOS Share Extension target and the
+Android `ACTION_SEND` intent filters; `useShareHandoff` drops whatever arrives
+straight into the import flow, so the user lands on the processing screen with work
+already underway. Tapping Analyze after sharing would defeat the point.
 
-**Open question (U1):** whether media can be obtained at all, per platform. The
-architecture assumes it cannot and degrades to upload/manual. If an official API path
-opens up for a platform, it is one provider change.
+All the interpretation is pure and tested (`src/core/ingestion/shareIntent.ts`),
+because what arrives is messy and platform-specific:
+
+* iOS usually sends a clean `webUrl`.
+* Android usually sends free text — `Check this out https://vm.tiktok.com/ZGabc/ 🔥` —
+  so the URL has to be dug out, and the *supported* one picked when the text carries
+  several (a tracking link, a profile link, and the video).
+* Either may send the **video file itself**, which is the best case of all.
+
+**A shared file beats a shared link, and that partly answers U1.** When the share
+sheet hands over the video, we have media we could never have downloaded ourselves —
+so it wins over any URL in the same payload, and the import runs the full
+transcription + frame pipeline. The link is kept for attribution.
+
+**Requires a development build.** The share extension is native code, so Expo Go
+cannot host it. The package uses `requireOptionalNativeModule`, so Expo Go still runs
+the app normally — paste-a-link and upload both work — it just receives no shares.
+
+**Not verified on a device.** The config plugin was verified by introspecting the
+generated native config (iOS extension target, App Group, Android intent filters), the
+resolver is tested against real payload shapes, and the bundle builds. But no actual
+share has been performed — that needs `npx expo prebuild` and a real build.
 
 ## Milestone 6 — Hardening 🚧
 
