@@ -12,7 +12,7 @@ Status at time of writing:
 | 3 | Mock import | **Done** |
 | 4 | AI extraction | **Done** — speech, on-screen text and vision |
 | 5 | Sharing / ingestion | **Done** |
-| 6 | Hardening | **Partly done** |
+| 6 | Hardening | **Done** |
 
 ---
 
@@ -144,16 +144,43 @@ generated native config (iOS extension target, App Group, Android intent filters
 resolver is tested against real payload shapes, and the bundle builds. But no actual
 share has been performed — that needs `npx expo prebuild` and a real build.
 
-## Milestone 6 — Hardening 🚧
+## Milestone 6 — Hardening ✅
 
 **Done:** confidence states, missing-data handling, all §31 error states, retry without
 starting over, local persistence, the analytics event taxonomy with a swappable sink,
 and an entitlement check at the import boundary.
 
-**Remaining:** authentication (Apple/Google/email) and sync. Deliberately last, per
-PRD §26 — the user should reach their first converted workout before being asked to
-register, and the local-first data model means adding auth does not restructure
-anything.
+**Accounts and sync.** Added last on purpose, and the local-first data model meant it
+restructured nothing — sync is a new *caller* of the existing `WorkoutRepository` and
+`SessionRepository` ports, not a rewrite of them. Email sign-in uses a one-time link
+(no password to choose, forget or leak); Apple and Google slot into
+`nativeProviders` in the composition root.
+
+**The decision that matters is what happens to local data on sign-in: union by id,
+never delete, never overwrite silently.** Ids are generated on device and globally
+unique, so a union is lossless — nobody signs in and watches their workouts
+disappear, which is the failure that would destroy trust in a local-first app
+instantly. When the same id exists on both sides, the newer `updatedAt` wins; a tie
+writes nothing at all, so re-running sync over unchanged data costs no round trips.
+
+Deletion is deliberately **not** synced. A record missing from one side means "not
+seen here yet", not "deleted", and telling those apart needs tombstones. Guessing
+wrong deletes a user's data, so until tombstones exist a delete stays local.
+
+Sync stores the workout **document**, not the relational tables from `0001_init.sql`.
+Those model workouts relationally for server-side querying nobody does yet; shredding
+a nested document into five tables and reassembling it is a lot of code with a lot of
+places to quietly drop provenance. The document stays the source of truth, which is
+what makes adding that projection safe later. See `supabase/migrations/0002_sync.sql`.
+
+**Optional throughout.** With no Supabase project configured the app is exactly what
+it was before accounts existed, and the Profile screen says so rather than implying a
+backup that does not exist.
+
+**Not verified against a live Supabase project** — no credentials in this
+environment. The auth service and both document stores are tested against stubbed
+clients, and the merge and sync logic are tested end to end against in-memory
+repositories, including the round trip that preserves provenance.
 
 ---
 

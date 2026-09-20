@@ -78,7 +78,7 @@ wins and the link is kept for attribution.
 ## Verifying it
 
 ```bash
-npm test           # 171 tests — no simulator, no credentials, no network
+npm test           # 201 tests — no simulator, no credentials, no network
 npm run typecheck
 npm run lint
 npx expo export --platform web    # proves every route and both API routes bundle
@@ -100,6 +100,8 @@ src/core/     Pure domain. No RN, no network. Where the product's rules live.
                 media is downloadable)
   extraction/   AI abstraction, guardrails, wire contract, frame sampling, fixtures
   transcription/ ASR port, uncertain-quantity detection, device-side client
+  auth/         account port
+  sync/         merge policy and local↔remote reconciliation
   editing/      pure workout mutations that preserve creator values
 src/server/   Server-only. The Claude call, the Deepgram call, and their endpoint
               handlers — never bundled into the app, because the keys live here.
@@ -153,8 +155,11 @@ built in. That is the first thing to do with real keys.
 
 Milestone 5 is complete: share sheet, deep link and upload all route into the same
 import flow. The share extension's native config was verified by introspection rather
-than on a device, which needs a real build. Milestone 6 is complete apart from
-authentication, which is last on purpose — a user should reach their first converted
-workout before anyone asks them to register.
+than on a device, which needs a real build.
+
+Milestone 6 is complete. Accounts and sync came last on purpose and restructured
+nothing — sync is a new caller of the repository ports, not a rewrite of them. Signing
+in merges local and remote by union, so nobody signs in and loses a workout. Without a
+Supabase project configured the app is exactly what it was before accounts existed.
 
 Details, including what is blocked on what, are in [MILESTONES.md](docs/MILESTONES.md).

@@ -224,12 +224,55 @@ spinner is the truthful version of a progress screen.
 
 ---
 
-### 10. No authentication in the MVP
+### 10. Authentication came last, and cost nothing structural
 
-**Why.** PRD §26: the user should experience their first conversion before being asked
-to register. Local-first repositories with no user id threaded through business logic
-make this an architectural property rather than a feature flag — adding auth later
-means syncing this data, not restructuring it.
+**Why last.** PRD §26: the user should experience their first conversion before being
+asked to register. Local-first repositories with no user id threaded through business
+logic made this an architectural property rather than a promise.
 
-**Cost.** Data lives on one device until Milestone 6. The Profile screen says so
-plainly rather than implying a backup that does not exist.
+**The claim held.** Adding accounts restructured nothing: `syncAll` is a new *caller*
+of the `WorkoutRepository` and `SessionRepository` ports the app has used since before
+accounts existed. That is the return on defining them as ports in the first place.
+
+**Cost.** Without a Supabase project configured, data still lives on one device, and
+the Profile screen says so rather than implying a backup that does not exist.
+
+---
+
+### 10b. Sync is a union by id — never delete, never silently overwrite
+
+**Why.** There is one failure that would destroy trust in a local-first app
+instantly: signing in and watching your workouts disappear. A union cannot do that.
+Ids are generated on device and globally unique, so merging local and remote by id is
+lossless — everything on both sides survives.
+
+When the *same* id exists on both sides, the newer `updatedAt` wins. Last-write-wins
+is a real tradeoff — a concurrent edit on the other device loses — but a workout is
+edited by one person on one device at a time, and field-level merge or a conflict UI
+is a great deal of machinery for a case this rare. `mergeById` is where that changes
+if it stops being true.
+
+**Deletion is deliberately not synced.** A record missing from one side means "not
+seen here yet", not "deleted". Telling those apart needs tombstones, and guessing
+wrong deletes someone's data. Until tombstones exist, a delete is local.
+
+**A tie writes nothing.** Re-running sync over unchanged data produces no round trips
+at all, which is what makes it safe to run on every sign-in and every sign-out.
+
+---
+
+### 10c. Sync stores the document, not the relational tables
+
+**Why.** `0001_init.sql` models workouts relationally — blocks, prescriptions, a
+shared exercise catalog — because that is what server-side querying will eventually
+need. Nothing queries it yet, and nothing in the MVP does.
+
+Shredding a nested document into five tables and reassembling it is a meaningful
+amount of code with a meaningful number of places to quietly drop a field —
+provenance most of all, since it is the product's spine and the easiest thing for a
+mapper to flatten away. For sync's actual job (don't lose my workouts when I change
+phones) it buys nothing.
+
+So sync stores the document, and the relational tables become a projection to build
+when something reads them. The document stays the source of truth either way, which is
+exactly what makes that projection safe to add later.

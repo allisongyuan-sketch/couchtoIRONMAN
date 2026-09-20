@@ -6,6 +6,14 @@ import { RemoteExtractionService } from '@/core/extraction/remoteExtractionServi
 import { VideoFrameMediaProcessor } from '@/core/extraction/videoFrameProcessor';
 import { RemoteTranscriptionClient } from '@/core/transcription/remoteTranscriptionClient';
 import type { ImportDependencies } from '@/core/import/importWorkout';
+import { UnavailableAuthService, type AuthService } from '@/core/auth/types';
+import { supabase } from '@/data/supabase/client';
+import { SupabaseAuthService } from '@/data/supabase/authService';
+import {
+  createRemoteHistoryStore,
+  createRemoteWorkoutStore,
+} from '@/data/supabase/remoteStores';
+import type { RemoteHistoryStore, RemoteWorkoutStore } from '@/core/sync/types';
 
 /**
  * Composition root.
@@ -70,3 +78,32 @@ export const importDependencies: ImportDependencies = extractionEndpoint
       extractionService: new MockExtractionService({ latencyMs: 2200 }),
       policy: { analyzeMetadataOnlyContent: true },
     };
+
+
+/* ------------------------------------------------------------------ *
+ * Accounts and sync
+ *
+ * Both are optional. With no Supabase project configured the app is exactly what it
+ * was before accounts existed: fully usable, entirely local. That is the posture PRD
+ * §26 asks for — try first, account later — expressed as a wiring decision rather
+ * than a feature flag scattered through the screens.
+ * ------------------------------------------------------------------ */
+
+export const authService: AuthService = supabase
+  ? new SupabaseAuthService({
+      client: supabase,
+      emailRedirectTo: 'repurpose://auth-callback',
+      // Apple and Google need native sign-in sheets and per-platform setup. Email
+      // works everywhere today; wiring these in is a change to this object alone.
+      nativeProviders: {},
+    })
+  : new UnavailableAuthService();
+
+export const remoteStores: {
+  workouts: RemoteWorkoutStore | null;
+  history: RemoteHistoryStore | null;
+} = supabase
+  ? { workouts: createRemoteWorkoutStore(supabase), history: createRemoteHistoryStore(supabase) }
+  : { workouts: null, history: null };
+
+export const accountsAvailable = !!supabase;
