@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useKeepAwake } from 'expo-keep-awake';
 import { Button, ProgressBar, Screen, Text, colors, spacing } from '@/ui';
 import { openOriginal, findDemonstration } from '@/ui/openOriginal';
 import { useTicker } from '@/ui/useTicker';
+import { useKeepScreenAwake } from '@/ui/useKeepScreenAwake';
 import { stepCompleteFeedback, timerFinishedFeedback } from '@/ui/haptics';
 import { useSessionStore } from '@/state/sessionStore';
 import { remainingSeconds, roundLabel, setLabel } from '@/core/engine/selectors';
@@ -24,7 +24,7 @@ import type { ExerciseSetStep, RestStep } from '@/core/schema/session';
  */
 export default function ActiveWorkoutScreen() {
   const router = useRouter();
-  useKeepAwake();
+  useKeepScreenAwake();
 
   const workout = useSessionStore((state) => state.workout);
   const plan = useSessionStore((state) => state.plan);

@@ -6,3 +6,4 @@ export * from './Card';
 export * from './ProgressBar';
 export * from './ProvenanceBadge';
 export * from './WorkoutOutline';
+export * from './useKeepScreenAwake';

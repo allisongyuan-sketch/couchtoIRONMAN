@@ -271,6 +271,15 @@ it survives copy changes, and the same ids work with a native device runner late
 1 produced exactly four failures — rounds shown, round 1 of 3, rest between rounds,
 repeats to round 3 — and no false ones elsewhere. Unreachable app also exits 1.
 
+**It earned its place on the first CI run.** All 15 functional assertions passed and
+the error check caught a real defect: the workout player unmounting before its wake
+lock finished activating, which threw an unhandled page error. Harmless to a user, but
+the sort of noise that teaches people to ignore error reporting — and invisible to
+every unit test, a clean bundle and a green typecheck. It was a race, so it never
+reproduced locally; CI's slower runner lost the race this machine kept winning. Fixed
+at the root (`useKeepScreenAwake` guards both calls) rather than suppressed in the
+test, so the check keeps its teeth.
+
 ---
 
 ### 8. Mock services ship in the product build
