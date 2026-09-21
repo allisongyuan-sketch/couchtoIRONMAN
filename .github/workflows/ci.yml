@@ -84,3 +84,48 @@ jobs:
       # policy, so it can actually fail.
       - name: Verify schema and RLS policies
         run: ./supabase/test/verify.sh
+
+  # Unit tests prove the engine, the guardrails and the schema. None of them prove
+  # the app RUNS — a broken provider, a bad route, a crash on mount or an unhandled
+  # rejection all pass a green suite and a clean bundle. This drives the real thing
+  # in a real browser and fails on any console or page error.
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build the web bundle
+        run: npx expo export --platform web --output-dir dist
+
+      # Served as a background process; the smoke test waits for it to answer.
+      - name: Serve it
+        run: |
+          npx expo serve --port 8099 &
+          npx wait-on http://localhost:8099 --timeout 60000
+
+      - name: Smoke test the import-to-workout flow
+        run: npm run smoke
+        env:
+          SMOKE_SHOTS: smoke-shots
+
+      # Screenshots of whatever the app actually looked like. Worth far more than a
+      # log line when a UI regression is what broke the run.
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots
+          path: smoke-shots/
+          if-no-files-found: ignore

@@ -22,7 +22,7 @@ export default function WorkoutCompleteScreen() {
     <Screen
       footer={
         <View style={styles.footer}>
-          <Button label="Done" size="large" onPress={() => done('/')} />
+          <Button testID="complete-done" label="Done" size="large" onPress={() => done('/')} />
           {workout ? (
             <Button label="View workout" variant="secondary" onPress={() => done('/library')} />
           ) : null}

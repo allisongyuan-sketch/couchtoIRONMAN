@@ -14,6 +14,15 @@ export interface ButtonProps {
   loading?: boolean;
   style?: ViewStyle;
   accessibilityHint?: string;
+  /**
+   * Stable handle for end-to-end tests.
+   *
+   * The smoke test drives the app through these rather than through button copy,
+   * so wording, casing and layout stay free to change without breaking it. On web
+   * React Native renders this as `data-testid`; on device the same id works with a
+   * native runner later.
+   */
+  testID?: string;
 }
 
 /**
@@ -29,11 +38,13 @@ export function Button({
   loading,
   style,
   accessibilityHint,
+  testID,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}

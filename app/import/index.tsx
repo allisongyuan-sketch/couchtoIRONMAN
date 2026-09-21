@@ -70,7 +70,13 @@ export default function ImportScreen() {
     <Screen
       scroll
       footer={
-        <Button label="Analyze" size="large" disabled={!supported} onPress={() => void analyze()} />
+        <Button
+          testID="import-analyze"
+          label="Analyze"
+          size="large"
+          disabled={!supported}
+          onPress={() => void analyze()}
+        />
       }
     >
       <View style={styles.header}>
@@ -90,6 +96,7 @@ export default function ImportScreen() {
         keyboardType="url"
         inputMode="url"
         accessibilityLabel="Workout video link"
+        testID="import-url"
         style={styles.input}
       />
 

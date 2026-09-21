@@ -42,6 +42,7 @@ export default function OnboardingScreen() {
       footer={
         <View style={styles.footer}>
           <Button
+            testID={isLast ? 'onboarding-finish' : 'onboarding-continue'}
             label={isLast ? 'Import Your First Workout' : 'Continue'}
             size="large"
             onPress={() => (isLast ? void finish() : setIndex(index + 1))}

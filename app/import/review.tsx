@@ -56,7 +56,12 @@ export default function ReviewScreen() {
       scroll
       footer={
         <View style={styles.footer}>
-          <Button label="Start Workout" size="large" onPress={() => void startWorkout()} />
+          <Button
+            testID="review-start"
+            label="Start Workout"
+            size="large"
+            onPress={() => void startWorkout()}
+          />
           <View style={styles.secondaryRow}>
             <Button
               label="Save for Later"

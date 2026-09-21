@@ -222,7 +222,7 @@ function ExerciseView({
         {isTimed ? (
           <>
             {timerMode === 'idle' ? (
-              <Button label="Start" size="large" onPress={onStartTimer} />
+              <Button testID="player-start-timer" label="Start" size="large" onPress={onStartTimer} />
             ) : (
               <Button
                 label={timerMode === 'paused' ? 'Resume' : 'Pause'}
@@ -233,11 +233,18 @@ function ExerciseView({
             )}
             <View style={styles.row}>
               <Button label="+15 sec" variant="secondary" style={styles.flex} onPress={onAddTime} />
-              <Button label="Skip" variant="secondary" style={styles.flex} onPress={onSkip} />
+              <Button
+                testID="player-skip"
+                label="Skip"
+                variant="secondary"
+                style={styles.flex}
+                onPress={onSkip}
+              />
             </View>
           </>
         ) : (
           <Button
+            testID="player-complete-set"
             label="Complete set"
             size="large"
             onPress={onComplete}
@@ -306,7 +313,7 @@ function RestView({
       </View>
 
       <View style={styles.controls}>
-        <Button label="Skip rest" size="large" onPress={onSkip} />
+        <Button testID="player-skip-rest" label="Skip rest" size="large" onPress={onSkip} />
         <View style={styles.row}>
           <Button label="+30 sec" variant="secondary" style={styles.flex} onPress={onAddTime} />
           <Button

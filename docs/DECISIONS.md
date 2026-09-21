@@ -250,6 +250,29 @@ nothing matching those patterns leaves the device.
 
 ---
 
+### 7h. The smoke test grips testIDs, not copy
+
+**Why.** A green unit suite and a clean bundle both pass while the app is broken: a bad
+provider, a crashed mount, an unhandled rejection, a route that never renders. So
+something has to drive the real thing. `e2e/smoke.mjs` walks link → review → three-round
+circuit → complete in a real browser and fails on any console or page error.
+
+The design constraint that matters is that **it must not fight UX work**. A test
+pinned to button copy, casing or layout punishes exactly the redesigns it should be
+protecting. So the flow-critical controls carry `testID`s, and the assertions check
+*facts* — the extracted title, `3 rounds`, `10 reps / side`, that a cue is attributed
+as a cue — never wording. Rewrite every screen and it keeps passing; break the flow and
+it fails.
+
+`testID` over an accessible name for the same reason it is idiomatic in React Native:
+it survives copy changes, and the same ids work with a native device runner later.
+
+**Verified it can fail**, like the RLS harness: changing the fixture's rounds from 3 to
+1 produced exactly four failures — rounds shown, round 1 of 3, rest between rounds,
+repeats to round 3 — and no false ones elsewhere. Unreachable app also exits 1.
+
+---
+
 ### 8. Mock services ship in the product build
 
 **Why.** `MockExtractionService` returns schema-valid fixtures with realistic latency.
