@@ -1,0 +1,9 @@
+{
+  "name": "repurpose-api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
+    "zod": "^4.1.11"
+  }
+}

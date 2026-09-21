@@ -47,6 +47,17 @@ jobs:
       - name: Check native config resolves
         run: npx expo config --type introspect > /dev/null
 
+      # server/api/*.mjs is build output that has to be committed, because Vercel
+      # reads the functions a deployment has from the checkout and never from what
+      # the build command writes. Committed build output drifts silently, so the
+      # only thing stopping that is this check: rebuild, and fail if the result
+      # differs from what the branch carries.
+      - name: API bundles match their sources
+        run: |
+          npm run build:api
+          git diff --exit-code -- server \
+            || { echo "::error::server/ is stale — run 'npm run build:api' and commit the result"; exit 1; }
+
   # The anon key ships inside the app bundle, and is safe only because Row Level
   # Security scopes every row to auth.uid(). That is a security claim, so it gets
   # checked on every push rather than trusted.

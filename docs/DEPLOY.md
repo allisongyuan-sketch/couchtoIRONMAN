@@ -3,13 +3,44 @@
 The app ships two server functions. They are the only code that holds a credential,
 and they are never bundled into the app:
 
-| Route            | Source                          | Needs                |
-| ---------------- | ------------------------------- | -------------------- |
-| `/api/extract`   | `src/server/extractHandler.ts`  | `ANTHROPIC_API_KEY`  |
-| `/api/transcribe`| `src/server/transcribeHandler.ts`| `DEEPGRAM_API_KEY`  |
+| Route             | Source                            | Needs               |
+| ----------------- | --------------------------------- | ------------------- |
+| `/api/extract`    | `src/server/extractHandler.ts`    | `ANTHROPIC_API_KEY` |
+| `/api/transcribe` | `src/server/transcribeHandler.ts` | `DEEPGRAM_API_KEY`  |
 
 Both are plain web handlers — `(request: Request) => Promise<Response>` — so they run
 on any platform that speaks that signature. Vercel is what the live deployment uses.
+
+## Layout
+
+```
+server-routes/*.ts   the route bindings (two lines each)
+scripts/build-api.mjs  esbuild: server-routes/ -> server/api/
+server/              the deploy unit, committed
+  api/*.mjs          bundled functions
+  package.json       two dependencies, generated
+  vercel.json        per-function limits
+```
+
+`server/` is the Vercel project's **Root Directory**. Everything the deploy needs is
+inside it and nothing else is installed — two dependencies rather than the app's
+entire React Native tree — and there is no build step on deploy.
+
+## Why the bundles are committed
+
+Generated files in git deserve a reason. This one was measured, not assumed.
+
+Vercel decides which functions a deployment has by reading the files in the
+*checkout*, before the build command runs. A build command that writes `api/*.mjs`
+produces a deployment that **goes green with no functions at all** and 404s every
+route. That was confirmed against a real preview deployment: the build logged
+`wrote api/hello.mjs`, the deployment reached READY, the file tree contained no
+lambda, and `GET /api/hello` returned 404. Nothing reported a problem.
+
+So the checkout has to already contain what Vercel looks for. `npm run build:api`
+regenerates `server/`, and CI reruns it and fails if the result differs from what the
+branch carries — which is the only thing standing between committed build output and
+silent drift.
 
 ## Build
 
@@ -17,10 +48,11 @@ on any platform that speaks that signature. Vercel is what the live deployment u
 npm run build:api
 ```
 
-`scripts/build-api.mjs` bundles `server-routes/*.ts` into `api/*.mjs` with esbuild,
-resolving the `@/` alias ahead of time so the deploy platform only ever sees plain
-JavaScript. `@anthropic-ai/sdk` and `zod` stay external and are installed from the
-deployed `package.json`; everything else is inlined. Output is gitignored.
+esbuild resolves the `@/` path alias ahead of time, so the platform only ever sees
+plain JavaScript with relative imports. `@anthropic-ai/sdk` and `zod` stay external
+and are declared in the generated `server/package.json`, at the versions the app's
+own `package.json` pins — so the versions the tests run against are the versions that
+run in production.
 
 ## Live deployment
 
@@ -32,12 +64,12 @@ GET  /api/transcribe  -> {"ok":true,"route":"transcribe","transcriptionConfigure
 ```
 
 The GET probes report whether the corresponding key is set without revealing it.
-`extractionConfigured: false` means `POST /api/extract` will answer 503 — the route
-is up, the credential is not there.
+`extractionConfigured: false` means `POST /api/extract` answers 503 — the route is
+up, the credential is not there.
 
 ## Setting the keys
 
-In the Vercel dashboard, project `repurpose-api` → Settings → Environment Variables:
+Vercel dashboard, project `repurpose-api` → Settings → Environment Variables:
 
 - `ANTHROPIC_API_KEY` — required for extraction
 - `DEEPGRAM_API_KEY` — optional; without it transcription answers 503 and the app
@@ -60,10 +92,12 @@ derived from it automatically; set `EXPO_PUBLIC_TRANSCRIPTION_ENDPOINT` only if
 transcription lives elsewhere. Leave the endpoint unset and the app runs on mock
 extraction with no other change.
 
-## Redeploying
+## Connecting git
 
-The Vercel project is not yet linked to the GitHub repository, so the current
-deployment was uploaded as files rather than built from a commit. Installing the
-Vercel GitHub App on `allisongyuan-sketch/couchtoIRONMAN` and connecting it to the
-`repurpose-api` project makes every push deploy the bundle straight from source,
-which is how this should work going forward.
+The project is configured (Root Directory `server`, no build command, Vercel
+Authentication off) but not yet linked to the repository, because the Vercel GitHub
+App is not installed on it. Installing it at https://github.com/apps/vercel and
+granting access to `allisongyuan-sketch/couchtoIRONMAN`, then connecting the repo
+under the project's Settings → Git, makes every push to `main` deploy.
+
+Until then, deployments are created by uploading the contents of `server/` directly.
