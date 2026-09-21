@@ -47,3 +47,7 @@ example
 
 # e2e screenshots
 smoke-shots/
+
+# Vercel function build output (sources live in server-routes/)
+/api
+dist-api/

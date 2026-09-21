@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "smoke": "node e2e/smoke.mjs"
+    "smoke": "node e2e/smoke.mjs",
+    "build:api": "node scripts/build-api.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
