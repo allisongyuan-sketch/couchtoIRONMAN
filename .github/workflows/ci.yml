@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same branch makes the older run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # The whole suite runs in Node with no simulator, no credentials and no
+      # network — which is the point of keeping the domain logic free of React
+      # Native imports.
+      - name: Test
+        run: npm test
+
+      # Typechecking cannot catch a broken route or an unresolvable import in the
+      # bundler graph. Exporting can, and it also proves both API routes still build.
+      - name: Build web bundle and API routes
+        run: npx expo export --platform web --output-dir dist
+
+      # Config lives in app.config.ts and runs the native config plugins, including
+      # the share extension. A plugin that fails to apply shows up here.
+      - name: Check native config resolves
+        run: npx expo config --type introspect > /dev/null
+
+  # The anon key ships inside the app bundle, and is safe only because Row Level
+  # Security scopes every row to auth.uid(). That is a security claim, so it gets
+  # checked on every push rather than trusted.
+  schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install psql
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      # Applies both migrations, asserts RLS is on for every table holding user
+      # data, then acts as two signed-in users and a signed-out one to prove the
+      # isolation. Exits non-zero on any failure — verified against a sabotaged
+      # policy, so it can actually fail.
+      - name: Verify schema and RLS policies
+        run: ./supabase/test/verify.sh
+
+  # Unit tests prove the engine, the guardrails and the schema. None of them prove
+  # the app RUNS — a broken provider, a bad route, a crash on mount or an unhandled
+  # rejection all pass a green suite and a clean bundle. This drives the real thing
+  # in a real browser and fails on any console or page error.
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build the web bundle
+        run: npx expo export --platform web --output-dir dist
+
+      # Served as a background process; the smoke test waits for it to answer.
+      - name: Serve it
+        run: |
+          npx expo serve --port 8099 &
+          npx wait-on http://localhost:8099 --timeout 60000
+
+      - name: Smoke test the import-to-workout flow
+        run: npm run smoke
+        env:
+          SMOKE_SHOTS: smoke-shots
+
+      # Screenshots of whatever the app actually looked like. Worth far more than a
+      # log line when a UI regression is what broke the run.
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots
+          path: smoke-shots/
+          if-no-files-found: ignore
