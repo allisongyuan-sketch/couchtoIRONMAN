@@ -47,7 +47,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 DEEPGRAM_API_KEY=...          # optional — enables speech transcription
 
 # In the app. A URL, not a credential.
-EXPO_PUBLIC_EXTRACTION_ENDPOINT=https://your-deployment.example.com/api/extract
+EXPO_PUBLIC_EXTRACTION_ENDPOINT=https://repurpose-api.vercel.app/api/extract
 ```
 
 With the endpoint set, the app transcribes the video and samples frames from it, then
@@ -55,7 +55,8 @@ sends the combined evidence to Claude through an endpoint you control. Unset it 
 the app returns to mock extraction with no other change — that switch is one ternary
 in `src/state/container.ts`.
 
-See `.env.example` for the full annotated list.
+See `.env.example` for the full annotated list, and `docs/DEPLOY.md` for how the
+server functions are built and deployed.
 
 **All three extraction sources now work.** Speech is transcribed (Deepgram, which takes
 an MP4 directly and returns per-word confidence). On-screen text is read straight off

@@ -39,9 +39,10 @@ const result = await build({
   // The Anthropic SDK is by far the largest dependency and is declared in the
   // output's package.json instead, so the platform installs it. Keeps the uploaded
   // artifact small and lets the install layer be cached between deploys.
-  // Installed by Vercel from the repo's own package.json, so the pinned version the
-  // app is tested against is the one that runs.
-  external: ['@anthropic-ai/sdk'],
+  // Installed by the platform rather than inlined, so the pinned versions the app is
+  // tested against are the ones that run — and so the artifact stays small enough to
+  // upload directly when a git-linked build is not available.
+  external: ['@anthropic-ai/sdk', 'zod'],
   sourcemap: false,
   // Deployed artifacts, not something anyone reads. Minifying keeps the upload
   // small enough to inline in a single API call.
