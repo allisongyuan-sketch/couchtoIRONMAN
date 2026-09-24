@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { ShareIntentProvider } from 'expo-share-intent';
 import { colors } from '@/ui/theme';
 import { useSessionStore } from '@/state/sessionStore';
@@ -14,6 +15,22 @@ import { useShareHandoff } from '@/state/useShareHandoff';
 import { flushAnalytics } from '@/core/analytics';
 
 void SplashScreen.preventAutoHideAsync();
+
+/**
+ * Expo Go cannot load the share extension's native code, and calling into a native
+ * module that is not there takes the whole app down on launch — so in Expo Go the
+ * app would not start at all rather than start without sharing.
+ *
+ * `disabled` is the package's own escape hatch for exactly this. With it set,
+ * `hasShareIntent` is permanently false, `useShareHandoff` returns early, and every
+ * other route in the app is reachable. Sharing is the one thing that needs a
+ * development build; nothing else should.
+ *
+ * This is a property of the client the bundle is running in, not of the build
+ * config, so it is read at runtime rather than compiled in.
+ */
+const RUNNING_IN_EXPO_GO =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
 /**
  * TanStack Query is configured but deliberately under-used in the MVP: all data is
@@ -54,8 +71,9 @@ export default function RootLayout() {
 
   return (
     // Wraps everything so a share can be picked up no matter which screen the app
-    // happens to open on.
-    <ShareIntentProvider>
+    // happens to open on — except under Expo Go, where there is no native module to
+    // wrap and the provider must be told so.
+    <ShareIntentProvider options={{ disabled: RUNNING_IN_EXPO_GO }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <QueryClientProvider client={queryClient}>
